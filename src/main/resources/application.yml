@@ -1,7 +1,7 @@
 spring:
   #  server
   datasource:
-    url: jdbc:mariadb://maria_db:3306/projectdb?createDatabaseIfNotExist=true
+    url: jdbc:mariadb://mariadb-0.mariadb.default.svc.cluster.local:3306/projectdb?createDatabaseIfNotExist=true
     username: root
     password: root1234
     driver-class-name: org.mariadb.jdbc.Driver
@@ -24,7 +24,7 @@ spring:
       display-request-duration: true
       defaultModelsExpandDepth: 2
       defaultModelExpandDepth: 2
-      path: /index.html
+      path: /swagger-ui.html
     api-docs:
       path: /api-docs
     show-actuator: true
