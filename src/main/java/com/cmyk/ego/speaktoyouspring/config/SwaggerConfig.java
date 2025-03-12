@@ -13,8 +13,8 @@ public class SwaggerConfig {
         return new OpenAPI().info(
             new Info()
                 .version("v1.0.0") // 스웨거에 나타날 버전 정보
-                .title("다중 멀티테넌시 구현 레포지토리") // 스웨거에 나타날 제목
-                .description("다중 멀티테넌시 API 문서") // 해당 docs를 설명하는 내용
+                .title("Speak To You") // 스웨거에 나타날 제목
+                .description("2025 한성대학교 캡스톤 디자인") // 해당 docs를 설명하는 내용
         );
     }
 }
