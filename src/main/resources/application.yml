@@ -1,37 +1,73 @@
 spring:
-  #  server
-  datasource:
-    url: jdbc:mariadb://mariadb-0.mariadb.default.svc.cluster.local:3306/projectdb?createDatabaseIfNotExist=true
-    username: root
-    password: root1234
-    driver-class-name: org.mariadb.jdbc.Driver
+  application:
+    name: Speak-To-You-Spring
+  # spring jpa, hibernate 환경설정
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
     properties:
       hibernate:
-        format_sql: true
-        show_sql: true
-      dialect: org.hibernate.dialect.MariaDBDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc.time_zone: Asia/Seoul
+        format_sql: true # SQL 쿼리를 보기 좋게 포맷팅하여 출력
+    open-in-view: false # 트랜잭션이 종료된 후에도 엔티티를 조회하려고 할 때 발생하는 LazyInitializationException을 방지
+    show-sql: true # Hibernate가 실행하는 SQL 쿼리를 콘솔에 출력
 
-  #Swagger
-  springdoc:
-    swagger-ui:
-      groups-order: DESC
-      tags-sorter: alpha
-      operations-sorter: method
-      disable-swagger-default-url: true
-      display-request-duration: true
-      defaultModelsExpandDepth: 2
-      defaultModelExpandDepth: 2
-      path: /api-docs
-    api-docs:
-      path: /api-docs
-    show-actuator: true
-    default-consumes-media-type: application/json
-    default-produces-media-type: application/json
-    writer-with-default-pretty-printer: true
-    model-and-view-allowed: true
-    paths-to-match:
-      - /api/v1/**
+  # flyway 환경설정
+  flyway:
+    validate-migration-naming: true # 파일명 형식이 Flyway 규칙을 따르는지 검증
+    baseline-on-migrate: true # Flyway가 버전이 지정되지 않은 기존 데이터베이스에서도 마이그레이션을 실행할 수 있도록 설정
+    locations: # 마이그레이션 파일을 찾을 디렉토리를 지정
+      - classpath:db/migration/metadata
+      - classpath:db/migration/tenant
+
+  # cors error 해결
+  web:
+    cors:
+      allowed-origins: "http://localhost:8080"
+      allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+      allowed-headers: "Authorization,Content-Type,X-TenantID"
+      exposed-headers: "Authorization"
+      allow-credentials: true
+
+# metadata database 환경설정
+metadata:
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/metadata
+    username: user1
+    password: user1234
+#    hikari:
+#      connection-test-query: SELECT 1
+
+# tenant database 환경설정
+
+tenant:
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/tenant
+    username: user1
+    password: user1234
+#    hikari:
+#      connection-test-query: SELECT 1
+#  pool:
+#    size: 5
+
+# swagger ui 환경설정
+springdoc:
+  swagger-ui:
+    groups-order: DESC
+    tags-sorter: alpha
+    operations-sorter: method
+    disable-swagger-default-url: true
+    display-request-duration: true
+    defaultModelsExpandDepth: 2
+    defaultModelExpandDepth: 2
+    path: /index.html
+  api-docs:
+    path: /api-docs
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  writer-with-default-pretty-printer: true
+  model-and-view-allowed: true
+  paths-to-match:
+    - /api/v1/**

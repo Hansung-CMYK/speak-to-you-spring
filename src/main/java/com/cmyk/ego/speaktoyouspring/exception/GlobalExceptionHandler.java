@@ -1,6 +1,6 @@
 package com.cmyk.ego.speaktoyouspring.exception;
 
-import com.cmyk.ego.speaktoyouspring.common.CommonResponse;
+import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;

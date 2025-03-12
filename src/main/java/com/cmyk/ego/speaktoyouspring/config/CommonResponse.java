@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.common;
+package com.cmyk.ego.speaktoyouspring.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
