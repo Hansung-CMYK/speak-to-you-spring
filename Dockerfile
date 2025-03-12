@@ -29,7 +29,7 @@ COPY --from=builder /app/build/libs/*.jar app.jar
 EXPOSE 8080
 
 # 실행 명령어
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=dev app.jar"]
 
 # 타임존 설정
 ENV TZ=Asia/Seoul

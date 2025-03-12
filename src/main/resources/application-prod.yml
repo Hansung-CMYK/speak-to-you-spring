@@ -7,11 +7,11 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc.time_zone: Asia/Seoul
         format_sql: true # SQL 쿼리를 보기 좋게 포맷팅하여 출력
     open-in-view: false # 트랜잭션이 종료된 후에도 엔티티를 조회하려고 할 때 발생하는 LazyInitializationException을 방지
     show-sql: true # Hibernate가 실행하는 SQL 쿼리를 콘솔에 출력
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   # flyway 환경설정
   flyway:
