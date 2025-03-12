@@ -24,16 +24,50 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:3.5.2'
-    compileOnly 'org.projectlombok:lombok'
+    // for Spring Boot Starter
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA 지원
+    implementation 'org.springframework.boot:spring-boot-starter-web' // Spring MVC 지원
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // Spring Validation 추가
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.h2database:h2'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // for Spring Boot Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot 테스트 지원
+
+    // for Jakarta EE
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0' // JPA 표준 API
+    implementation 'jakarta.validation:jakarta.validation-api:3.1.1' // Bean Validation API
+    implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0' // @PostConstruct 등 지원
+    implementation 'jakarta.servlet:jakarta.servlet-api:6.1.0' // Jakarta Servlet API
+
+    // for Hibernate TODO: 의존성 필요성(springboot-jpa에 포함되어있는지 확인)
+    implementation 'org.hibernate:hibernate-core:6.6.10.Final' // Hibernate 최신 버전
+    implementation 'org.hibernate:hibernate-hikaricp:6.6.10.Final' // HikariCP 기반 커넥션 풀 추가
+
+    // for QueryDSL 설정 TODO: 종속성 취약성 확인
+    implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+
+    // for Flyway
+    implementation 'org.flywaydb:flyway-database-postgresql' // DB 마이그레이션 도구
+
+    // for Database(PostgreSQL)
+    runtimeOnly 'org.postgresql:postgresql' // PostgreSQL 드라이버
+    runtimeOnly 'com.h2database:h2' // H2 인메모리 DB (테스트용)
+
+    // for Lombok
+    compileOnly 'org.projectlombok:lombok' // Lombok (컴파일 타임 전용)
+    annotationProcessor 'org.projectlombok:lombok' // Lombok 애노테이션 프로세서
+
+    // for Swagger UI
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5' // SpringDoc OpenAPI
+
+    // unknown enum constant When.MAYBE
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    // TODO: ???
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 }
 
 tasks.named('test') {
