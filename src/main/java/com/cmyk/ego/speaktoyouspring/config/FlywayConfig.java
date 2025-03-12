@@ -1,7 +1,7 @@
 package com.cmyk.ego.speaktoyouspring.config;
 
-import com.cmyk.ego.speaktoyouspring.api.metadata.tenant.TenantService;
-import com.cmyk.ego.speaktoyouspring.config.properties.MetadataProperties;
+import com.cmyk.ego.speaktoyouspring.api.hub.tenant.TenantService;
+import com.cmyk.ego.speaktoyouspring.config.properties.HubProperties;
 import com.cmyk.ego.speaktoyouspring.config.properties.TenantProperties;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class FlywayConfig {
     private final TenantProperties tenantProperties;
-    private final MetadataProperties metadataProperties;
+    private final HubProperties hubProperties;
     private final FlywayProperties flywayProperties;
 
     private final TenantService tenantService;
@@ -28,7 +28,7 @@ public class FlywayConfig {
     public void migrateFlyway() {
         // metadata Database에 관한 정보를 명시한다.
         Flyway.configure()
-                .dataSource(metadataProperties.getDatasource())
+                .dataSource(hubProperties.getDatasource())
                 .locations(flywayProperties.getLocations().getFirst()) // application.yml에서 경로 로드
                 .baselineOnMigrate(flywayProperties.isBaselineOnMigrate()) // 기존 DB를 기준점으로 설정할지 여부
                 .load()

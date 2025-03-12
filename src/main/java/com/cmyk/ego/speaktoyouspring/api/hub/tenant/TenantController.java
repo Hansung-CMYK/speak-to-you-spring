@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.metadata.tenant;
+package com.cmyk.ego.speaktoyouspring.api.hub.tenant;
 
 import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import com.cmyk.ego.speaktoyouspring.config.flyway.FlywayService;
