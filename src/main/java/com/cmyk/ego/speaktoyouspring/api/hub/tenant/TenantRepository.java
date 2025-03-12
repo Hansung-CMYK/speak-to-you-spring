@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.metadata.tenant;
+package com.cmyk.ego.speaktoyouspring.api.hub.tenant;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

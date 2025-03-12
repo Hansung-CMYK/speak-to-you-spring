@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.metadata.tenant;
+package com.cmyk.ego.speaktoyouspring.api.hub.tenant;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

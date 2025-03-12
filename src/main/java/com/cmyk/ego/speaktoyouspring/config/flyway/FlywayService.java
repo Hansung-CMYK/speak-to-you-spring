@@ -1,7 +1,7 @@
 package com.cmyk.ego.speaktoyouspring.config.flyway;
 
-import com.cmyk.ego.speaktoyouspring.api.metadata.tenant.Tenant;
-import com.cmyk.ego.speaktoyouspring.api.metadata.tenant.TenantService;
+import com.cmyk.ego.speaktoyouspring.api.hub.tenant.Tenant;
+import com.cmyk.ego.speaktoyouspring.api.hub.tenant.TenantService;
 import com.cmyk.ego.speaktoyouspring.config.properties.TenantProperties;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
