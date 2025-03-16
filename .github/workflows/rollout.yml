@@ -1,0 +1,29 @@
+name: trigger_kubernetes_deploy
+
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install SSH client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ssh
+
+      - name: Deploy to AWS (Light)
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.AWS_SSH_HOST }}
+          SSH_USER: ${{ secrets.AWS_SSH_USER }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > key.pem
+          chmod 600 key.pem
+          mkdir -p ~/.ssh
+          ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts  # StrictHostKeyChecking=no # 대신 사용
+          ssh -i key.pem $SSH_USER@$SSH_HOST << EOF
+            kubectl set image deployment ${{ secrets.DEPLOYMENT_NAME }} spring-app=${{ secrets.DOCKER_HUB_LATEST_IMAGE }}
+            kubectl rollout restart deployment/${{ secrets.DEPLOYMENT_NAME }}
+          EOF
+          rm -f key.pem
