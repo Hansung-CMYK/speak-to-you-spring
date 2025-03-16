@@ -1,6 +1,6 @@
 name: trigger_kubernetes_deploy
 
-on: workflow_dispatch
+on: repository_dispatch
 
 jobs:
   deploy:
