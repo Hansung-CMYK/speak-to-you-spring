@@ -1,6 +1,9 @@
 name: trigger_kubernetes_deploy
 
-on: repository_dispatch
+on:
+  repository_dispatch:
+    types: [trigger_kubernetes_deploy]
+
 
 jobs:
   deploy:
