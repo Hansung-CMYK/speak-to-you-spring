@@ -3,11 +3,14 @@ package com.cmyk.ego.speaktoyouspring.config;
 import com.cmyk.ego.speaktoyouspring.api.hub.tenant.TenantService;
 import com.cmyk.ego.speaktoyouspring.config.properties.HubProperties;
 import com.cmyk.ego.speaktoyouspring.config.properties.TenantProperties;
+import jakarta.activation.DataSource;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Set;
@@ -29,7 +32,7 @@ public class FlywayConfig {
         // metadata Database에 관한 정보를 명시한다.
         Flyway.configure()
                 .dataSource(hubProperties.getDatasource())
-                .locations(flywayProperties.getLocations().getFirst()) // application.yml에서 경로 로드
+                .locations("resources/db/migration/hub")
                 .baselineOnMigrate(flywayProperties.isBaselineOnMigrate()) // 기존 DB를 기준점으로 설정할지 여부
                 .load()
                 .migrate();
