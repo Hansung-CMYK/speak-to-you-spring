@@ -3,6 +3,8 @@ package com.cmyk.ego.speaktoyouspring.api.tenant.conversationlog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ConversationLogService {
@@ -15,5 +17,9 @@ public class ConversationLogService {
                         .topic(conversationLog.getTopic())
                         .build()
         );
+    }
+
+    public List<ConversationLog> readAll() {
+        return conversationLogRepository.findAll();
     }
 }
