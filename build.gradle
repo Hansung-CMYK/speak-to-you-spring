@@ -68,6 +68,12 @@ dependencies {
 
     // TODO: ???
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // for Firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
+    //for Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 tasks.named('test') {
