@@ -3,8 +3,10 @@ package com.cmyk.ego.speaktoyouspring.api.tenant.conversationlog;
 import com.cmyk.ego.speaktoyouspring.api.hub.tenant.TenantService;
 import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,4 +59,30 @@ public class ConversationLogController {
             TenantContext.clear();
         }
     }
+
+    // conversation_log table에 기록된 데이터 삭제
+    @DeleteMapping("delete/{schemaName}/{logId}")
+    public ResponseEntity delete(@PathVariable String schemaName, @PathVariable Long logId) {
+        try {
+            TenantContext.setCurrentTenant(schemaName);
+            var result = conversationLogService.delete(logId);
+
+            return ResponseEntity.ok(
+                    CommonResponse.builder()
+                            .code(200)
+                            .message("삭제 완료")
+                            .data(result)
+                            .build()
+            );
+        } catch (EntityNotFoundException e) { // logId와 일치하는 데이터가 없는 경우
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(CommonResponse.builder()
+                            .code(404)
+                            .message(e.getMessage())
+                            .build());
+        } finally {
+            TenantContext.clear();
+        }
+    }
+
 }

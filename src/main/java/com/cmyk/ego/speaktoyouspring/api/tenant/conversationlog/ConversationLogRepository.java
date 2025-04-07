@@ -14,4 +14,6 @@ public interface ConversationLogRepository extends JpaRepository<ConversationLog
     int findMaxOrderIndex();
 
     List<ConversationLog> findAllByStatus(String status);
+
+    ConversationLog findByLogId(Long LogId);
 }
