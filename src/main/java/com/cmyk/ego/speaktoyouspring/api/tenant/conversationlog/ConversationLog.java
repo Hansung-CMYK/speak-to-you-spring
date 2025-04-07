@@ -24,7 +24,12 @@ public class ConversationLog {
     @Column(name = "topic")
     private String topic;
 
-    @Builder.Default
-    @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "last_question")
+    private String lastQuestion;
+
+    @Column(name = "order_index")
+    private int orderIndex;
+
+    @Column(name = "status")
+    private String status;
 }

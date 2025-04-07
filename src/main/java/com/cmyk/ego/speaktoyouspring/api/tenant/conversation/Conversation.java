@@ -16,19 +16,22 @@ import java.time.LocalDateTime;
 @Builder
 @Data
 public class Conversation {
-  @Id
-  @Column(name = "conversation_id")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "conversation_seq")
-  @SequenceGenerator(name = "conversation_seq", sequenceName = "conversation_seq", allocationSize = 1)
-  private Long conversationId;
+    @Id
+    @Column(name = "conversation_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "conversation_seq")
+    @SequenceGenerator(name = "conversation_seq", sequenceName = "conversation_seq", allocationSize = 1)
+    private Long conversationId;
 
-  @Column(name = "log_id")
-  private Long logId;
+    @Column(name = "log_id")
+    private Long logId;
 
-  @Column(name = "content")
-  private String content;
+    @Column(name = "content")
+    private String content;
 
-  @Builder.Default
-  @Column(name = "created_at")
-  private LocalDateTime createdAt = LocalDateTime.now();
+    @Builder.Default
+    @Column(name = "created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "type")
+    private String type;
 }
