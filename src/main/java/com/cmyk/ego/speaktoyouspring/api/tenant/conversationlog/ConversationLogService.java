@@ -11,15 +11,22 @@ public class ConversationLogService {
     private final ConversationLogRepository conversationLogRepository;
 
     public ConversationLog create(ConversationLog conversationLog) {
+        int nextOrderIndex = conversationLogRepository.findMaxOrderIndex() + 1;
+
         return conversationLogRepository.save(
                 ConversationLog.builder()
-                        .logId(conversationLog.getLogId())
                         .topic(conversationLog.getTopic())
+                        .lastQuestion(conversationLog.getLastQuestion())
+                        .orderIndex(nextOrderIndex)
                         .build()
         );
     }
 
     public List<ConversationLog> readAll() {
         return conversationLogRepository.findAll();
+    }
+
+    public List<ConversationLog> readAllActiveLogs() {
+        return conversationLogRepository.findAllByStatus("A");
     }
 }

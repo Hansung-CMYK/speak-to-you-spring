@@ -33,12 +33,14 @@ public class ConversationLogController {
     public ResponseEntity<?> readAll(@PathVariable String schemaName) {
         try {
             TenantContext.setCurrentTenant(schemaName);
-            var result = conversationLogService.readAll();
+            var result = conversationLogService.readAllActiveLogs();
+
+            String msg = result.isEmpty() ? "대화한 주제가 없습니다." : "전체 주제 조회";
 
             return ResponseEntity.ok(
                     CommonResponse.builder()
                             .code(200)
-                            .message("전체 주제 조회")
+                            .message(msg)
                             .data(result)
                             .build()
             );

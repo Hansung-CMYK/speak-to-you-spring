@@ -30,6 +30,7 @@ public class ConversationLog {
     @Column(name = "order_index")
     private int orderIndex;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "status", nullable = false)
+    @Builder.Default
+    private String status = "A";
 }
