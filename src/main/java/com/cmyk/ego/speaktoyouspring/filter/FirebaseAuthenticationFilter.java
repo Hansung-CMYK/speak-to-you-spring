@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Collections;
 
-
+// Firebase 인증 필터
 @Component
 public class FirebaseAuthenticationFilter implements Filter {
 
@@ -26,6 +26,7 @@ public class FirebaseAuthenticationFilter implements Filter {
 
         String authHeader = httpRequest.getHeader("Authorization");
 
+        // Bearer의 Token 추출
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.replace("Bearer ", "");
 
@@ -47,7 +48,6 @@ public class FirebaseAuthenticationFilter implements Filter {
 
             // Spring Security의 SecurityContext에 설정
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
         }
 
         // 다음 필터로 요청을 넘김

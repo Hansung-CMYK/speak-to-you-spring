@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+// Spring Security 설정 Configuration
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -37,8 +38,9 @@ public class SecurityConfig {
                 .build();
     }
 
+    // BCrypt를 이용한 비밀번호 단방향 해시 인코더 등록
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();  // 패스워드 인코더 설정
+        return new BCryptPasswordEncoder();
     }
 }
