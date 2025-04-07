@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS conversation (
     log_id BIGINT NOT NULL,
     content VARCHAR(255), -- 대화 내용
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- 생성 시간 (현재 시간)
+    type CHAR(1) NOT NULL, -- ego질문(q), 사용자 답변(a)
     CONSTRAINT fk_conversation_log FOREIGN KEY (log_id) REFERENCES conversation_log(log_id)
 );
 
