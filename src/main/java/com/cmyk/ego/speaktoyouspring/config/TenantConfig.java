@@ -1,6 +1,6 @@
 package com.cmyk.ego.speaktoyouspring.config;
 
-import com.cmyk.ego.speaktoyouspring.config.properties.TenantProperties;
+import com.cmyk.ego.speaktoyouspring.config.properties.PersonalizedDataProperties;
 import com.cmyk.ego.speaktoyouspring.util.querydsl.QuerydslJpaRepositoryFactoryBean;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
@@ -36,17 +36,17 @@ public class TenantConfig {
     // 파일 내에서만 url을 사용 가능하도록 Default 접근 지정자 설정
     static final String BASE_PACKAGE = "com.cmyk.ego.speaktoyouspring.api.tenant";
     private final JpaProperties jpaProperties; // TODO: ???
-    private final TenantProperties tenantProperties;
+    private final PersonalizedDataProperties personalizedDataProperties;
 
     @Bean
     JpaVendorAdapter jpaVendorAdapter() {
         return new HibernateJpaVendorAdapter();
     }
 
-    /// tenant 데이터베이스에 대한 데이터 소스를 저장한다.
+    /// personalized-data 데이터베이스에 대한 데이터 소스를 저장한다.
     @Bean
-    public DataSource tenantDataSource() {
-        return tenantProperties.getDataSource();
+    public DataSource personalizedDataSource() {
+        return personalizedDataProperties.getDataSource();
     }
 
     /// 엔티티를 조작할 Manager를 생성
@@ -68,7 +68,7 @@ public class TenantConfig {
 
         // LocalContainerEntityManagerFactoryBean 설정
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(tenantDataSource()); // 멀티 테넌트 데이터 소스 설정
+        em.setDataSource(personalizedDataSource()); // personalized-data의 데이터 소스 설정
         em.setPackagesToScan(BASE_PACKAGE); // 엔티티 클래스가 포함된 패키지를 스캔
         em.setJpaVendorAdapter(jpaVendorAdapter()); // JPA 구현체 설정 (Hibernate)
         em.setJpaPropertyMap(jpaPropertiesMap); // JPA 속성 설정

@@ -2,7 +2,7 @@ package com.cmyk.ego.speaktoyouspring.config;
 
 import com.cmyk.ego.speaktoyouspring.api.hub.tenant.TenantService;
 import com.cmyk.ego.speaktoyouspring.config.properties.HubProperties;
-import com.cmyk.ego.speaktoyouspring.config.properties.TenantProperties;
+import com.cmyk.ego.speaktoyouspring.config.properties.PersonalizedDataProperties;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
@@ -17,16 +17,16 @@ import java.util.Set;
 @EnableConfigurationProperties(FlywayProperties.class)
 @RequiredArgsConstructor
 public class FlywayConfig {
-    private final TenantProperties tenantProperties;
+    private final PersonalizedDataProperties personalizedDataProperties;
     private final HubProperties hubProperties;
     private final FlywayProperties flywayProperties;
 
     private final TenantService tenantService;
 
-    /// metadata와 tenant Database를 마이그레이션(형상 관리) 하는 함수.
+    /// hub와 personalized-data Database를 마이그레이션(형상 관리) 하는 함수.
     @PostConstruct
     public void migrateFlyway() {
-        // metadata Database에 관한 정보를 명시한다.
+        // hub Database에 관한 정보를 명시한다.
         Flyway.configure()
                 .dataSource(hubProperties.getDatasource())
                 .locations(flywayProperties.getLocations().getFirst()) // application.yml에서 경로 로드
@@ -35,13 +35,13 @@ public class FlywayConfig {
                 .migrate();
 
         // 모든 스키마 정보(스키마 이름)를 얻는다.
-        // 현재 tenant Database의 개별 스키마는 metadata.tenant.schemaName으로 등록되기 때문이다.
+        // 현재 personalized-data Database의 개별 스키마는 hub.tenant.schemaName으로 등록되기 때문이다.
         final Set<String> schemas = tenantService.getTenantName();
 
-        // tenant Database에 관한 정보를 명시한다.
+        // personalized-data Database에 관한 정보를 명시한다.
         schemas.forEach(schema -> {
             Flyway.configure()
-                    .dataSource(tenantProperties.getDataSource())
+                    .dataSource(personalizedDataProperties.getDataSource())
                     .locations(flywayProperties.getLocations().get(1))
                     .baselineOnMigrate(flywayProperties.isBaselineOnMigrate()) // 기존 DB를 기준점으로 설정할지 여부
                     .defaultSchema(schema) // 개별 테넌트 스키마 이름 적용
