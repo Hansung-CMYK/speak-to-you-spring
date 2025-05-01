@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,12 +19,25 @@ import java.util.stream.Collectors;
 public class UserAccountService {
     private final UserAccountRepository userAccountRepository;
 
+    // 가입한 이력이 있는 user 들의 전체 정보 반환
     public Set<UserAccount> getAllUserData() {
         return new HashSet<>(userAccountRepository.findAll());
     }
 
+    // 가입한 이력이 있는 user 들의 uid반환
     public Set<String> getAllUserUID(){
         return userAccountRepository.findAll().stream().map(UserAccount::getUid).collect(Collectors.toSet());
+    }
+
+    // email로 가입한 이력이 있는 user의 전체 정보를 반환
+    public Set<UserAccount> getUserDataByEmail(String email) {
+        List<UserAccount> users = userAccountRepository.findAllByEmail(email);
+
+        if (users.isEmpty()) {
+            throw new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND);
+        }
+
+        return new HashSet<>(users);
     }
 
     /// 파라미터 `UserAccount`를 hub.user_account table에 저장(생성)하는 함수

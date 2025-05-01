@@ -45,6 +45,19 @@ public class UserAccountController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("목록 조회 완료").data(result).build());
     }
 
+    // user_account table에서 특정 email을 가지는 user를 조회한다.
+    @GetMapping("read")
+    public ResponseEntity readByEmail(@RequestParam String email) {
+
+        var result = userAccountService.getUserDataByEmail(email);
+
+        return ResponseEntity.ok(CommonResponse.builder()
+                .code(200)
+                .message("사용자 조회 성공")
+                .data(result)
+                .build());
+    }
+
 //    @DeleteMapping("delete/{schemaName}")
 //    public ResponseEntity delete(@PathVariable String schemaName) {
 //        var result = flywayService.deleteTenant(schemaName);
