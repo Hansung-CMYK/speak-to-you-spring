@@ -45,6 +45,7 @@ public class UserAccountService {
         return userAccountRepository.save(userAccount);
     }
 
+    // uid를 가지는 user를 탈퇴 시킨다.
     public UserAccount delete(String uid) {
         var userAccount = userAccountRepository.findByUid(uid)
                 .orElseThrow(() -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));

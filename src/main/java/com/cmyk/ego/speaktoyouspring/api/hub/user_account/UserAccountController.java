@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/tenant/")
+@RequestMapping("/api/v1/user-account/")
 @RequiredArgsConstructor
 @Validated
 public class UserAccountController {
@@ -58,10 +58,11 @@ public class UserAccountController {
                 .build());
     }
 
-//    @DeleteMapping("delete/{schemaName}")
-//    public ResponseEntity delete(@PathVariable String schemaName) {
-//        var result = flywayService.deleteTenant(schemaName);
-//
-//        return ResponseEntity.ok(CommonResponse.builder().code(200).message("스키마 제거 완료").data(result).build());
-//    }
+    // user_account table에서 특정 uid를 가지는 user를 탈퇴 시킨다.
+    @DeleteMapping("delete")
+    public ResponseEntity delete(@RequestBody UserDeleteRequest targetUser) {
+        var result = flywayService.deleteTenant(targetUser);
+
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("user 탈퇴 완료").data(result).build());
+    }
 }
