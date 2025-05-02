@@ -59,18 +59,7 @@ public class UserAccountController {
     }
 
     @PatchMapping("update")
-    public ResponseEntity updateUserAccount(
-            @RequestBody @Valid UserAccountDTO updateUserAccountReq, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(CommonResponse.builder()
-                    .code(400)
-                    .message("입력값 오류: " + errorMessage)
-                    .build());
-        }
+    public ResponseEntity updateUserAccount(@RequestBody UserAccountDTO updateUserAccountReq) {
 
         var result = userAccountService.updateUserAccount(updateUserAccountReq);
 

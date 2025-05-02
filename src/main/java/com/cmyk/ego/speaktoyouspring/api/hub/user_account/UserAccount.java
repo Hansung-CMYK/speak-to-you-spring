@@ -21,7 +21,7 @@ public class UserAccount {
 
   /// 사용자가 만든 EGO ID
   @Column(name="ego_id")
-  private String egoId;
+  private Integer egoId;
 
   /// 사용자 email
   @Column(name="email")
