@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.tenant.conversation;
+package com.cmyk.ego.speaktoyouspring.api.personalized_data.conversation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

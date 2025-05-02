@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.tenant.conversation;
+package com.cmyk.ego.speaktoyouspring.api.personalized_data.conversation;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

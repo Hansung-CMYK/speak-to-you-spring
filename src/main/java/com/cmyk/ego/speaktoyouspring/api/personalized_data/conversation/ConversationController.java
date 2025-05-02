@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.tenant.conversation;
+package com.cmyk.ego.speaktoyouspring.api.personalized_data.conversation;
 
 import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;

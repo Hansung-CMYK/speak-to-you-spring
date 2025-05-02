@@ -34,7 +34,7 @@ import java.util.Map;
 )
 public class TenantConfig {
     // 파일 내에서만 url을 사용 가능하도록 Default 접근 지정자 설정
-    static final String BASE_PACKAGE = "com.cmyk.ego.speaktoyouspring.api.tenant";
+    static final String BASE_PACKAGE = "com.cmyk.ego.speaktoyouspring.api.personalized_data";
     private final JpaProperties jpaProperties; // TODO: ???
     private final PersonalizedDataProperties personalizedDataProperties;
 
