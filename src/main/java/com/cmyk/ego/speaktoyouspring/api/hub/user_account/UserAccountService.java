@@ -49,12 +49,16 @@ public class UserAccountService {
         UserAccount user = userAccountRepository.findByUid(userToUpdate.getUid())
                 .orElseThrow(() -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
 
+        if (userToUpdate.getEgoId() != null)
+            user.setEgoId(userToUpdate.getEgoId());
         if (userToUpdate.getEmail() != null)
             user.setEmail(userToUpdate.getEmail());
         if (userToUpdate.getBirthDate() != null)
             user.setBirthDate(userToUpdate.getBirthDate());
         if (userToUpdate.getRole() != null)
             user.setRole(userToUpdate.getRole());
+        if (userToUpdate.getCreatedAt() != null)
+            user.setCreatedAt(userToUpdate.getCreatedAt());
         if (userToUpdate.getIsDeleted() != null)
             user.setIsDeleted(userToUpdate.getIsDeleted());
 

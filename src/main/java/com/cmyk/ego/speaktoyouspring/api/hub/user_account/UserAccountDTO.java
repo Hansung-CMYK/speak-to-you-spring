@@ -14,6 +14,8 @@ public class UserAccountDTO {
     @NotBlank(message = "UID는 필수입니다.")
     private String uid;
 
+    private String egoId;
+
     @NotBlank(message = "email은 필수입니다.")
     private String email;
 
@@ -30,6 +32,7 @@ public class UserAccountDTO {
     public UserAccount toEntity() {
         return UserAccount.builder()
                 .uid(uid)
+                .egoId(egoId)
                 .email(email)
                 .birthDate(birthDate)
                 .role(role)

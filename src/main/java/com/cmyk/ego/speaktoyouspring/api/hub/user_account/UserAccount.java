@@ -19,6 +19,10 @@ public class UserAccount {
   @Column(name = "uid", nullable = false, unique = true)
   private String uid;
 
+  /// 사용자가 만든 EGO ID
+  @Column(name="ego_id")
+  private String egoId;
+
   /// 사용자 email
   @Column(name="email")
   private String email;
