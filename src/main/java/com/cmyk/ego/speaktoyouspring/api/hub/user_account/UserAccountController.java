@@ -58,11 +58,34 @@ public class UserAccountController {
                 .build());
     }
 
+    @PatchMapping("update")
+    public ResponseEntity updateUserAccount(
+            @RequestBody @Valid UserAccountDTO updateUserAccountReq, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(CommonResponse.builder()
+                    .code(400)
+                    .message("입력값 오류: " + errorMessage)
+                    .build());
+        }
+
+        var result = userAccountService.updateUserAccount(updateUserAccountReq);
+
+        return ResponseEntity.ok(CommonResponse.builder()
+                .code(200)
+                .message("사용자 정보 업데이트 성공")
+                .data(result)
+                .build());
+    }
+
     // user_account table에서 특정 uid를 가지는 user를 탈퇴 시킨다.
     @DeleteMapping("delete")
     public ResponseEntity delete(@RequestBody UserDeleteRequest targetUser) {
         var result = flywayService.deleteTenant(targetUser);
 
-        return ResponseEntity.ok(CommonResponse.builder().code(200).message("user 탈퇴 완료").data(result).build());
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("사용자 탈퇴 완료").data(result).build());
     }
 }

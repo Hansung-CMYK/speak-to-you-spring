@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 public class UserAccountService {
     private final UserAccountRepository userAccountRepository;
 
+    /// 파라미터 `UserAccount`를 hub.user_account table에 저장(생성)하는 함수
+    public UserAccount create(UserAccount userAccount) {
+        return userAccountRepository.save(userAccount);
+    }
+
     // 가입한 이력이 있는 user 들의 전체 정보 반환
     public Set<UserAccount> getAllUserData() {
         return new HashSet<>(userAccountRepository.findAll());
@@ -40,9 +45,20 @@ public class UserAccountService {
         return new HashSet<>(users);
     }
 
-    /// 파라미터 `UserAccount`를 hub.user_account table에 저장(생성)하는 함수
-    public UserAccount create(UserAccount userAccount) {
-        return userAccountRepository.save(userAccount);
+    public UserAccount updateUserAccount(UserAccountDTO userToUpdate) {
+        UserAccount user = userAccountRepository.findByUid(userToUpdate.getUid())
+                .orElseThrow(() -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
+        if (userToUpdate.getEmail() != null)
+            user.setEmail(userToUpdate.getEmail());
+        if (userToUpdate.getBirthDate() != null)
+            user.setBirthDate(userToUpdate.getBirthDate());
+        if (userToUpdate.getRole() != null)
+            user.setRole(userToUpdate.getRole());
+        if (userToUpdate.getIsDeleted() != null)
+            user.setIsDeleted(userToUpdate.getIsDeleted());
+
+        return userAccountRepository.save(user);
     }
 
     // uid를 가지는 user를 탈퇴 시킨다.
