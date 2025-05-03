@@ -47,16 +47,13 @@ public class ChatRoomService {
         return chatRoomRepository.save(foundChatRoom);
     }
 
-    public Page<ChatRoom> getChatRooms(ChatRoomSearchRequest chatRoomSearchRequest) {
-
-        int page = chatRoomSearchRequest.getPageNum();
-        int pageSize = chatRoomSearchRequest.getPageSize();
+    public Page<ChatRoom> getChatRooms(int pageNum, int pageSize) {
 
         // Pageable 객체를 생성 (from, to는 페이지 번호 기준으로 0부터 시작)
         // from: 페이지 번호, to: 페이지 크기
         // 하나의 페이지에 몇개의 데이터가 들어갈지 : pageSize
-        // pageSize로 나뉘어진 page에서 몇번째 page를 조회할까요 : page
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Order.desc("lastChatAt")));
+        // pageSize로 나뉘어진 page에서 몇번째 page를 조회할까요 : pageNum
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Order.desc("lastChatAt")));
 
         return chatRoomRepository.findByIsDeletedFalse(pageable);
     }

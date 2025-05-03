@@ -62,26 +62,24 @@ public class ChatRoomController {
 
     /**
      * page수와 pagesize에 따른 채팅방 리스트 조회
-     * */
-    @PostMapping("search")
-    public ResponseEntity getUndeletedChatRooms(@RequestBody @Valid ChatRoomSearchRequest chatRoomSearchRequest, BindingResult bindingResult) {
+     */
+    @PostMapping
+    public ResponseEntity getUndeletedChatRooms(
+            @RequestBody @Valid ChatRoomPageRequest chatRoomPageRequest,
+            @RequestParam(defaultValue = "0") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
-        if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(CommonResponse.builder()
-                    .code(400)
-                    .message("입력값 오류: " + errorMessage)
-                    .build());
+        if (pageNum<0 || pageSize<1) {
+            return ResponseEntity.badRequest()
+                    .body(CommonResponse.builder()
+                            .code(400)
+                            .message("pageNum은 0이상, pageSize는 1이상이여야 합니다.")
+                            .build());
         }
 
-        TenantContext.setCurrentTenant(chatRoomSearchRequest.getUid());
+        TenantContext.setCurrentTenant(chatRoomPageRequest.getUid());
 
-        var result = chatRoomService.getChatRooms(chatRoomSearchRequest);
-
-        int pageNum = chatRoomSearchRequest.getPageNum();
-        int pageSize = chatRoomSearchRequest.getPageSize();
+        var result = chatRoomService.getChatRooms(pageNum, pageSize);
 
         return ResponseEntity.ok(CommonResponse.builder()
                 .code(200)
