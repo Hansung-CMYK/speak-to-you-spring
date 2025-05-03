@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Builder
 public class ChatHistoryDTO {
 
+    private Long id;
+
     @NotBlank(message = "UID는 필수입니다.")
     private String uid;
 

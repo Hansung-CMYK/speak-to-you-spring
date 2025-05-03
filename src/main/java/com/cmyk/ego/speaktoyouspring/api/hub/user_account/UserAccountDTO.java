@@ -14,7 +14,7 @@ public class UserAccountDTO {
     @NotBlank(message = "UID는 필수입니다.")
     private String uid;
 
-    private Integer egoId;
+    private Long egoId;
 
     @NotBlank(message = "email은 필수입니다.")
     private String email;

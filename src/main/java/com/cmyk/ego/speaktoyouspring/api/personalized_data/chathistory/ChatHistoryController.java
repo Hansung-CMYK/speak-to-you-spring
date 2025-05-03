@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/chat-history/")
 @RequiredArgsConstructor
 public class ChatHistoryController {
-    private final ChatHistoryService conversationService;
+    private final ChatHistoryService chatHistoryService;
 
     @PostMapping("create")
     public ResponseEntity create(@RequestBody @Valid ChatHistoryDTO chatHistoryDTO, BindingResult bindingResult) {
@@ -31,8 +31,26 @@ public class ChatHistoryController {
 
         TenantContext.setCurrentTenant(chatHistoryDTO.getUid());
 
-        var result = conversationService.create(chatHistoryDTO);
+        var result = chatHistoryService.create(chatHistoryDTO);
 
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("대화 생성 완료").data(result).build());
     }
+
+    @DeleteMapping("delete")
+    public ResponseEntity delete(@RequestBody ChatHistoryDTO chatHistoryDTO) {
+
+        if (chatHistoryDTO.getUid() == null || chatHistoryDTO.getId() == null) {
+            return ResponseEntity.badRequest().body(CommonResponse.builder()
+                    .code(400)
+                    .message("입력값 오류: uid와 id는 필수 값입니다.")
+                    .build());
+        }
+
+        TenantContext.setCurrentTenant(chatHistoryDTO.getUid());
+
+        var result = chatHistoryService.deleteChatHistory(chatHistoryDTO.getId());
+
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("대화 삭제 완료").data(result).build());
+    }
+
 }

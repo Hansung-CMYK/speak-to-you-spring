@@ -42,7 +42,7 @@ public class UserAccountController {
     public ResponseEntity readAll() {
         var result = userAccountService.getAllUserData();
 
-        return ResponseEntity.ok(CommonResponse.builder().code(200).message("사용자 조회 성공").data(result).build());
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("user 전체 조회 완료").data(result).build());
     }
 
     // user_account table에서 특정 email을 가지는 user를 조회한다.
@@ -53,7 +53,7 @@ public class UserAccountController {
 
         return ResponseEntity.ok(CommonResponse.builder()
                 .code(200)
-                .message("사용자 조회 성공")
+                .message("email기반 user 조회 성공")
                 .data(result)
                 .build());
     }
@@ -65,7 +65,7 @@ public class UserAccountController {
 
         return ResponseEntity.ok(CommonResponse.builder()
                 .code(200)
-                .message("사용자 정보 업데이트 성공")
+                .message("user 정보 업데이트 성공")
                 .data(result)
                 .build());
     }
@@ -75,6 +75,6 @@ public class UserAccountController {
     public ResponseEntity delete(@RequestBody UserRequestBody targetUser) {
         var result = userAccountService.delete(targetUser.getUid());
 
-        return ResponseEntity.ok(CommonResponse.builder().code(200).message("사용자 탈퇴 완료").data(result).build());
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("user 탈퇴 완료").data(result).build());
     }
 }

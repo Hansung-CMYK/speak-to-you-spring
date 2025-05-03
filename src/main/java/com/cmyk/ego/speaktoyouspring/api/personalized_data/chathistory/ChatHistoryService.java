@@ -47,4 +47,20 @@ public class ChatHistoryService {
         return chatHistoryRepository.save(chatHistoryDTO.toEntity());
 
     }
+
+    public ChatHistory deleteChatHistory(Long chatHistoryId){
+        Optional<ChatHistory> chatHistoryOptional = chatHistoryRepository.findById(chatHistoryId);
+
+        if(chatHistoryOptional.isEmpty()){
+            throw new ControlledException(ChatHistoryErrorCode.ERROR_CHATHISTORY_NOT_EXISTS);
+        }
+
+        ChatHistory foundChatHistory =  chatHistoryOptional.get();
+
+        foundChatHistory.setIsDeleted(true);
+
+        chatHistoryRepository.save(foundChatHistory);
+
+        return foundChatHistory;
+    }
 }
