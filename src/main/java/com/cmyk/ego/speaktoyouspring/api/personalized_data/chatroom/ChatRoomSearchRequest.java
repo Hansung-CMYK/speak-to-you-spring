@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatRoom;
+package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +19,6 @@ public class ChatRoomSearchRequest {
     private Integer pageNum;
 
     @NotNull(message = "pageSize 값은 필수값입니다.")
-    @Min(value = 0, message = "to 값은 0 이상이어야 합니다.")
+    @Min(value = 1, message = "to 값은 1 이상이어야 합니다.")
     private Integer pageSize;
 }

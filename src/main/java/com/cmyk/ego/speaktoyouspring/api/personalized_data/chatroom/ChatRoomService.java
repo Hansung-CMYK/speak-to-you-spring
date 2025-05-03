@@ -1,8 +1,7 @@
-package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatRoom;
+package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom;
 
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.ChatRoomErrorCode;
-import com.cmyk.ego.speaktoyouspring.exception.errorcode.UserAccountErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,7 +44,7 @@ public class ChatRoomService {
         // 값을 직접 삭제 하지 않고 is_deleted속성을 true로 변경
         foundChatRoom.setIsDeleted(true);
 
-        return foundChatRoom;
+        return chatRoomRepository.save(foundChatRoom);
     }
 
     public Page<ChatRoom> getChatRooms(ChatRoomSearchRequest chatRoomSearchRequest) {

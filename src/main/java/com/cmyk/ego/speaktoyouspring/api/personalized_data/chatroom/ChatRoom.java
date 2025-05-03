@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatRoom;
+package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

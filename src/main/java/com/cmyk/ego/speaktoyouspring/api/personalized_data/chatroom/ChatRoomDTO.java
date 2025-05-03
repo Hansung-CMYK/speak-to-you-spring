@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatRoom;
+package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
