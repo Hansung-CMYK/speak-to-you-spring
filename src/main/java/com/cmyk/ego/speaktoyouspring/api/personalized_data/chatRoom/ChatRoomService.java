@@ -2,7 +2,12 @@ package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatRoom;
 
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.ChatRoomErrorCode;
+import com.cmyk.ego.speaktoyouspring.exception.errorcode.UserAccountErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -41,5 +46,19 @@ public class ChatRoomService {
         foundChatRoom.setIsDeleted(true);
 
         return foundChatRoom;
+    }
+
+    public Page<ChatRoom> getChatRooms(ChatRoomSearchRequest chatRoomSearchRequest) {
+
+        int page = chatRoomSearchRequest.getPageNum();
+        int pageSize = chatRoomSearchRequest.getPageSize();
+
+        // Pageable 객체를 생성 (from, to는 페이지 번호 기준으로 0부터 시작)
+        // from: 페이지 번호, to: 페이지 크기
+        // 하나의 페이지에 몇개의 데이터가 들어갈지 : pageSize
+        // pageSize로 나뉘어진 page에서 몇번째 page를 조회할까요 : page
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Order.desc("lastChatAt")));
+
+        return chatRoomRepository.findByIsDeletedFalse(pageable);
     }
 }

@@ -19,7 +19,7 @@ public class ChatRoomController {
     /**
      * 채팅방 생성
      * 필수값 : uid, egoid
-     * */
+     */
     @PostMapping("create")
     public ResponseEntity create(@RequestBody @Valid ChatRoomDTO chatRoomDTO, BindingResult bindingResult) {
 
@@ -43,10 +43,10 @@ public class ChatRoomController {
     /**
      * 채팅방 삭제
      * 필수값 : uid, egoid
-     * */
+     */
     @DeleteMapping("delete")
-    public ResponseEntity delete(@RequestBody ChatRoomDTO targetChatRoom){
-        if (targetChatRoom.getUid() == null || targetChatRoom.getEgoId() == null){
+    public ResponseEntity delete(@RequestBody ChatRoomDTO targetChatRoom) {
+        if (targetChatRoom.getUid() == null || targetChatRoom.getEgoId() == null) {
             return ResponseEntity.badRequest().body(CommonResponse.builder()
                     .code(400)
                     .message("입력값 오류: uid와 egoid는 필수 값입니다.")
@@ -58,5 +58,35 @@ public class ChatRoomController {
         var result = chatRoomService.delete(targetChatRoom);
 
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("채팅방 삭제 완료").data(result).build());
+    }
+
+    /**
+     * page수와 pagesize에 따른 채팅방 리스트 조회
+     * */
+    @PostMapping("search")
+    public ResponseEntity getUndeletedChatRooms(@RequestBody @Valid ChatRoomSearchRequest chatRoomSearchRequest, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(CommonResponse.builder()
+                    .code(400)
+                    .message("입력값 오류: " + errorMessage)
+                    .build());
+        }
+
+        TenantContext.setCurrentTenant(chatRoomSearchRequest.getUid());
+
+        var result = chatRoomService.getChatRooms(chatRoomSearchRequest);
+
+        int pageNum = chatRoomSearchRequest.getPageNum();
+        int pageSize = chatRoomSearchRequest.getPageSize();
+
+        return ResponseEntity.ok(CommonResponse.builder()
+                .code(200)
+                .message(String.format("채팅방 조회 pagenum_%d, pagesize_%d", pageNum, pageSize))
+                .data(result.getContent())
+                .build());
     }
 }
