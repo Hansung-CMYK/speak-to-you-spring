@@ -14,7 +14,7 @@ public class ChatHistoryDTO {
     private String uid;
 
     @NotNull(message = "ChatRoomId는 필수입니다.")
-    private Integer chatRoomId;
+    private Long chatRoomId;
 
     private String content;
 

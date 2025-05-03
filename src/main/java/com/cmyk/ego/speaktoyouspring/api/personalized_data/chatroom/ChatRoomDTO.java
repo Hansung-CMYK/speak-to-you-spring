@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatRoomDTO {
-    private Integer id; // 채팅방 ID
+    private Long id; // 채팅방 ID
 
     @NotBlank(message = "UID는 필수입니다.")
     private String uid; // 사용자 UID

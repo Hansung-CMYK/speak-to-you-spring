@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ChatRoomRepository extends JpaRepository<ChatRoom, Integer> {
+public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     Optional<ChatRoom> findByUidAndEgoIdAndIsDeletedFalse(String uid, Integer egoId);
 
@@ -16,5 +16,5 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Integer> {
     Page<ChatRoom> findByIsDeletedFalse(Pageable pageable);
 
     // chatRoomId가 같은 것을 찾아주는 메서드
-    Optional<ChatRoom> findByIdAndIsDeletedFalse(Integer id);
+    Optional<ChatRoom> findByIdAndIsDeletedFalse(Long id);
 }

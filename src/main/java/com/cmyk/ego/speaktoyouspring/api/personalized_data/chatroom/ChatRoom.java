@@ -19,7 +19,7 @@ public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id") // 채팅방 ID
-    private Integer id;
+    private Long id;
 
     @Column(name = "uid", nullable = false)
     private String uid; // 사용자 UID

@@ -21,7 +21,7 @@ public class ChatHistory {
   private String uid; // 사용자 UID
 
   @Column(name = "chat_room_id", nullable = false)
-  private Integer chatRoomId;  // 채팅방 ID
+  private Long chatRoomId;  // 채팅방 ID
 
   @Column(columnDefinition = "TEXT")
   private String content;  // 사용자가 보낸 메시지
