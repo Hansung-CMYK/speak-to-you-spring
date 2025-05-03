@@ -63,7 +63,7 @@ public class ChatRoomController {
     /**
      * page수와 pagesize에 따른 채팅방 리스트 조회
      */
-    @PostMapping
+    @PostMapping("paged")
     public ResponseEntity getUndeletedChatRooms(
             @RequestBody @Valid ChatRoomPageRequest chatRoomPageRequest,
             @RequestParam(defaultValue = "0") int pageNum,

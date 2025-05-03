@@ -4,11 +4,19 @@ import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoom;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoomRepository;
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.ChatHistoryErrorCode;
+import com.cmyk.ego.speaktoyouspring.exception.errorcode.ChatRoomErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,6 +55,47 @@ public class ChatHistoryService {
         return chatHistoryRepository.save(chatHistoryDTO.toEntity());
 
     }
+
+    /**
+     * 전체 채팅 내역을 page단위로 조회
+     * */
+    public Page<ChatHistory> getPagedChatHistories(int pageNum, int pageSize) {
+
+        // Pageable 객체를 생성 (from, to는 페이지 번호 기준으로 0부터 시작)
+        // from: 페이지 번호, to: 페이지 크기
+        // 하나의 페이지에 몇개의 데이터가 들어갈지 : pageSize
+        // pageSize로 나뉘어진 page에서 몇번째 page를 조회할까요 : pageNum
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Order.desc("chatAt")));
+
+        return chatHistoryRepository.findByIsDeletedFalse(pageable);
+    }
+
+    /**
+     * 하루치 채팅 내역 조회
+     * */
+    public List<ChatHistory> getDailyChatHistories(Long chatRoomId, String dateString) {
+        // 날짜 포맷 검증
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date;
+
+        try {
+            date = LocalDate.parse(dateString, formatter);
+        } catch (Exception e) {
+            throw new ControlledException(ChatRoomErrorCode.ERROR_DATE_FORMAT);
+        }
+
+        // 하루의 시작과 끝 시간 정의
+        LocalDateTime startOfDay = date.atStartOfDay();// 00:00:00
+        LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();// 다음날 00:00:00
+
+        List<ChatHistory> chatHistories = chatHistoryRepository.findByChatRoomIdAndIsDeletedFalseAndChatAtBetween(chatRoomId, startOfDay, endOfDay);
+
+        // 정렬 (오래된 순으로 정렬)
+        chatHistories.sort(Comparator.comparing(ChatHistory::getChatAt));
+
+        return chatHistories;
+    }
+
 
     public ChatHistory deleteChatHistory(Long chatHistoryId){
         Optional<ChatHistory> chatHistoryOptional = chatHistoryRepository.findById(chatHistoryId);
