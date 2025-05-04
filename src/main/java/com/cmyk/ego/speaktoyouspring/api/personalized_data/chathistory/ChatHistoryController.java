@@ -1,7 +1,10 @@
 package com.cmyk.ego.speaktoyouspring.api.personalized_data.chathistory;
 
+import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
 import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
+import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
+import com.cmyk.ego.speaktoyouspring.exception.errorcode.UserAccountErrorCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +14,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/chat-history/")
+@RequestMapping("/api/v1/chat-history")
 @RequiredArgsConstructor
 public class ChatHistoryController {
     private final ChatHistoryService chatHistoryService;
+    private final UserAccountRepository userAccountRepository;
 
-    @PostMapping("create")
+    /**
+     * 채팅 내역 생성
+     * */
+    @PostMapping
     public ResponseEntity create(@RequestBody @Valid ChatHistoryDTO chatHistoryDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -29,6 +36,10 @@ public class ChatHistoryController {
                     .build());
         }
 
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(chatHistoryDTO.getUid()).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
         TenantContext.setCurrentTenant(chatHistoryDTO.getUid());
 
         var result = chatHistoryService.create(chatHistoryDTO);
@@ -37,9 +48,10 @@ public class ChatHistoryController {
     }
 
     /**
-     * page수와 pagesize에 따른 전체 채팅내역 조회
+     * page수와 pagesize에 따른 채팅 내역 조회
+     * 필수값 : uid, chatRoomId
      */
-    @PostMapping("/paged")
+    @PostMapping("/list")
     public ResponseEntity getUndeletedChatHistories(
             @RequestBody @Valid ChatHistoryRequest chatHistoryRequest,
             @RequestParam(defaultValue = "0") int pageNum,
@@ -52,6 +64,10 @@ public class ChatHistoryController {
                             .message("pageNum은 0이상, pageSize는 1이상이여야 합니다.")
                             .build());
         }
+
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(chatHistoryRequest.getUid()).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
 
         TenantContext.setCurrentTenant(chatHistoryRequest.getUid());
 
@@ -67,7 +83,7 @@ public class ChatHistoryController {
     /**
      * 전달받은 날짜에 해당하는 하루치 채팅내역조회
      */
-    @PostMapping("daily")
+    @PostMapping("/daily")
     public ResponseEntity getUndeletedChatHistories(
             @RequestBody @Valid ChatHistoryRequest chatHistoryRequest,
             @RequestParam("date") String dateString,
@@ -83,6 +99,10 @@ public class ChatHistoryController {
                     .build());
         }
 
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(chatHistoryRequest.getUid()).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
         TenantContext.setCurrentTenant(chatHistoryRequest.getUid());
 
         var result = chatHistoryService.getDailyChatHistories(chatHistoryRequest.getChatRoomId(), dateString);
@@ -94,7 +114,11 @@ public class ChatHistoryController {
                 .build());
     }
 
-    @DeleteMapping("delete")
+    /**
+     * 채팅내역 삭제
+     * 필수값 : uid, id
+     * */
+    @DeleteMapping
     public ResponseEntity delete(@RequestBody ChatHistoryDTO chatHistoryDTO) {
 
         if (chatHistoryDTO.getUid() == null || chatHistoryDTO.getId() == null) {
@@ -103,6 +127,10 @@ public class ChatHistoryController {
                     .message("입력값 오류: uid와 id는 필수 값입니다.")
                     .build());
         }
+
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(chatHistoryDTO.getUid()).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
 
         TenantContext.setCurrentTenant(chatHistoryDTO.getUid());
 
