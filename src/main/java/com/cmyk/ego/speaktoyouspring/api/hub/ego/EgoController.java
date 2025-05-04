@@ -1,16 +1,12 @@
 package com.cmyk.ego.speaktoyouspring.api.hub.ego;
 
-import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountDTO;
 import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
@@ -37,6 +33,14 @@ public class EgoController {
         var result = egoService.create(egoDTO);
 
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 생성 완료").data(result).build());
+    }
+
+    @GetMapping("read/all")
+    public ResponseEntity readAll() {
+
+        var result = egoService.readAll();
+
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 조회 완료").data(result).build());
     }
 
 }
