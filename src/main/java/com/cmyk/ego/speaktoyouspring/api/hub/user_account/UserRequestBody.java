@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserDeleteRequest {
+public class UserRequestBody {
     private String uid;
+    private String email;
 }

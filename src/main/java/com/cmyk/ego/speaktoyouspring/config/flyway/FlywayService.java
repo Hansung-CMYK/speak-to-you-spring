@@ -3,7 +3,7 @@ package com.cmyk.ego.speaktoyouspring.config.flyway;
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccount;
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountDTO;
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountService;
-import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserDeleteRequest;
+import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserRequestBody;
 import com.cmyk.ego.speaktoyouspring.config.properties.PersonalizedDataProperties;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
@@ -52,10 +52,4 @@ public class FlywayService {
         return userAccountEntity;
     }
 
-//    /// TODO: 직접적으로 운영 환경에서 clean 함수를 사용하는 것은 권장되지 않는 행위임
-//    /// TODO: 권한 등의 대책을 마련할 필요가 있다.
-    public UserAccount deleteTenant(UserDeleteRequest targetUser) {
-
-        return userAccountService.delete(targetUser.getUid());
-    }
 }

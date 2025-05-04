@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/user-account/")
+@RequestMapping("/api/v1/user-account")
 @RequiredArgsConstructor
 @Validated
 public class UserAccountController {
     private final UserAccountService userAccountService;
     private final FlywayService flywayService;
 
-    @PostMapping("create")
+    @PostMapping
     public ResponseEntity create(@RequestBody @Valid UserAccountDTO userAccountDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -34,22 +34,22 @@ public class UserAccountController {
 
         var result = flywayService.createUserSchema(userAccountDTO);
 
-        return ResponseEntity.ok(CommonResponse.builder().code(200).message("스키마 생성 완료").data(result).build());
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("user 스키마 생성 완료").data(result).build());
     }
 
     // user_account table의 전체 정보를 조회한다.
-    @GetMapping("read/all")
+    @GetMapping("/users")
     public ResponseEntity readAll() {
         var result = userAccountService.getAllUserData();
 
-        return ResponseEntity.ok(CommonResponse.builder().code(200).message("목록 조회 완료").data(result).build());
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("사용자 조회 성공").data(result).build());
     }
 
     // user_account table에서 특정 email을 가지는 user를 조회한다.
-    @GetMapping("read")
-    public ResponseEntity readByEmail(@RequestParam String email) {
+    @PostMapping("/users")
+    public ResponseEntity readByEmail(@RequestBody UserRequestBody userEmailRequest) {
 
-        var result = userAccountService.getUserDataByEmail(email);
+        var result = userAccountService.getUserDataByEmail(userEmailRequest.getEmail());
 
         return ResponseEntity.ok(CommonResponse.builder()
                 .code(200)
@@ -58,7 +58,7 @@ public class UserAccountController {
                 .build());
     }
 
-    @PatchMapping("update")
+    @PatchMapping
     public ResponseEntity updateUserAccount(@RequestBody UserAccountDTO updateUserAccountReq) {
 
         var result = userAccountService.updateUserAccount(updateUserAccountReq);
@@ -71,9 +71,9 @@ public class UserAccountController {
     }
 
     // user_account table에서 특정 uid를 가지는 user를 탈퇴 시킨다.
-    @DeleteMapping("delete")
-    public ResponseEntity delete(@RequestBody UserDeleteRequest targetUser) {
-        var result = flywayService.deleteTenant(targetUser);
+    @DeleteMapping
+    public ResponseEntity delete(@RequestBody UserRequestBody targetUser) {
+        var result = userAccountService.delete(targetUser.getUid());
 
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("사용자 탈퇴 완료").data(result).build());
     }
