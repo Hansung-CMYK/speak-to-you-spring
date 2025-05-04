@@ -1,7 +1,10 @@
 package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom;
 
+import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
 import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
+import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
+import com.cmyk.ego.speaktoyouspring.exception.errorcode.UserAccountErrorCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +18,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
+    private final UserAccountRepository userAccountRepository;
 
     /**
      * 채팅방 생성
      * 필수값 : uid, egoid
      */
-    @PostMapping("create")
+    @PostMapping
     public ResponseEntity create(@RequestBody @Valid ChatRoomDTO chatRoomDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -33,6 +37,10 @@ public class ChatRoomController {
                     .build());
         }
 
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(chatRoomDTO.getUid()).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
         TenantContext.setCurrentTenant(chatRoomDTO.getUid());
 
         var result = chatRoomService.create(chatRoomDTO);
@@ -44,7 +52,7 @@ public class ChatRoomController {
      * 채팅방 삭제
      * 필수값 : uid, egoid
      */
-    @DeleteMapping("delete")
+    @DeleteMapping
     public ResponseEntity delete(@RequestBody ChatRoomDTO targetChatRoom) {
         if (targetChatRoom.getUid() == null || targetChatRoom.getEgoId() == null) {
             return ResponseEntity.badRequest().body(CommonResponse.builder()
@@ -52,6 +60,10 @@ public class ChatRoomController {
                     .message("입력값 오류: uid와 egoid는 필수 값입니다.")
                     .build());
         }
+
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(targetChatRoom.getUid()).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
 
         TenantContext.setCurrentTenant(targetChatRoom.getUid());
 
@@ -62,8 +74,9 @@ public class ChatRoomController {
 
     /**
      * page수와 pagesize에 따른 채팅방 리스트 조회
+     * 필수값 : uid
      */
-    @PostMapping("paged")
+    @PostMapping("/list")
     public ResponseEntity getUndeletedChatRooms(
             @RequestBody @Valid ChatRoomPageRequest chatRoomPageRequest,
             @RequestParam(defaultValue = "0") int pageNum,
@@ -76,6 +89,10 @@ public class ChatRoomController {
                             .message("pageNum은 0이상, pageSize는 1이상이여야 합니다.")
                             .build());
         }
+
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(chatRoomPageRequest.getUid()).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
 
         TenantContext.setCurrentTenant(chatRoomPageRequest.getUid());
 
