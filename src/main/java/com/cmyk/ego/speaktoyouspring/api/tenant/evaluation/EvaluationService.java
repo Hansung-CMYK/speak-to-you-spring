@@ -20,9 +20,9 @@ public class EvaluationService {
         int talkingScore = evaluationDTO.getTalkingScore();
         int overallScore = evaluationDTO.getOverallScore();
 
-        if (solvingScore < 1 || solvingScore > 3 ||
-                talkingScore < 1 || talkingScore > 3 ||
-                overallScore < 1 || overallScore > 5) {
+        if (solvingScore < EvaluationScoreRange.MIN_SCORE || solvingScore > EvaluationScoreRange.MAX_SCORE_THREE ||
+                talkingScore < EvaluationScoreRange.MIN_SCORE || talkingScore > EvaluationScoreRange.MAX_SCORE_THREE ||
+                overallScore < EvaluationScoreRange.MIN_SCORE || overallScore > EvaluationScoreRange.MAX_SCORE_FIVE) {
             throw new ControlledException(EvaluationErrorCode.ERROR_SCORE_OUT_OF_RANGE);
         }
 

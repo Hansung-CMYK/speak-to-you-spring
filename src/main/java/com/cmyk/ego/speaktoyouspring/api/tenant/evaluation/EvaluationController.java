@@ -4,7 +4,6 @@ import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
 import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
-import com.cmyk.ego.speaktoyouspring.exception.ErrorMessage;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.UserAccountErrorCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +15,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/evaluation/")
+@RequestMapping("/api/v1/evaluation")
 @RequiredArgsConstructor
 @Validated
 public class EvaluationController {
     private final EvaluationService evaluationService;
     private final UserAccountRepository userAccountRepository;
 
-    @PostMapping("create")
+    /**
+     * 평가 결과 생성
+     * */
+    @PostMapping
     public ResponseEntity create(@RequestBody @Valid EvaluationDTO evaluationDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -46,7 +48,11 @@ public class EvaluationController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("evaluation 생성 완료").data(result).build());
     }
 
-    @PostMapping("read/all")
+    /**
+     * 평가 결과 전체 조회
+     * 필수값 : uid
+     * */
+    @PostMapping("/list")
     public ResponseEntity readAll(@RequestBody @Valid EvaluationReadRequest evaluationReadRequest, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             String errorMessage = bindingResult.getFieldErrors().stream()

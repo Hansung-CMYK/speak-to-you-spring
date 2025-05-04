@@ -11,14 +11,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/ego/")
+@RequestMapping("/api/v1/ego")
 @RequiredArgsConstructor
 @Validated
 public class EgoController {
     private final EgoService egoService;
 
-    // ego 생성
-    @PostMapping("create")
+    /**
+     * ego 생성
+     * */
+    @PostMapping
     public ResponseEntity create(@RequestBody @Valid EgoDTO egoDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -36,8 +38,10 @@ public class EgoController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 생성 완료").data(result).build());
     }
 
-    // ego테이블에 기록된 전체 ego조회
-    @GetMapping("read/all")
+    /**
+     * ego테이블에 기록된 전체 ego조회
+     */
+    @GetMapping
     public ResponseEntity readAll() {
 
         var result = egoService.readAll();
@@ -45,8 +49,10 @@ public class EgoController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 조회 완료").data(result).build());
     }
 
-    // egoid와 일치하는 ego조회
-    @GetMapping("read/{egoid}")
+    /**
+     * egoid와 일치하는 ego조회
+     * */
+    @GetMapping("/{egoid}")
     public ResponseEntity read(@PathVariable("egoid") Long egoId) {
 
         var result = egoService.findById(egoId);
@@ -54,8 +60,10 @@ public class EgoController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 조회 완료").data(result).build());
     }
 
-    // ego정보 수정
-    @PatchMapping("update")
+    /**
+     * ego정보 수정
+     * */
+    @PatchMapping
     public ResponseEntity update(@RequestBody EgoDTO egoDTO) {
 
         if (egoDTO.getId() == null) {
