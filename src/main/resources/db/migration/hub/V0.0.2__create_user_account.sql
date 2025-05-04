@@ -7,3 +7,13 @@ CREATE TABLE IF NOT EXISTS user_account (
     created_at DATE,                                                  -- 생성일시
     is_deleted BOOLEAN DEFAULT FALSE                                  -- 탈퇴 여부(TRUE : 탈퇴, FALSE : 정상)
 );
+
+CREATE TABLE IF NOT EXISTS ego (
+    id SERIAL PRIMARY KEY,                                        -- EGO 고유 ID, PostgreSQL에서는 SERIAL 사용
+    name VARCHAR(100) NOT NULL,                                   -- EGO 이름
+    introduction TEXT,                                            -- EGO 자기소개
+    profile_image BYTEA,                                          -- EGO 프로필 이미지, PostgreSQL에서는 BYTEA 사용
+    mbti VARCHAR(4),                                              -- MBTI 성격 유형
+    personality VARCHAR(255),                                     -- EGO 성격 설명
+    created_at DATE NOT NULL DEFAULT CURRENT_DATE                 -- 생성 날짜
+);
