@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
@@ -47,6 +44,28 @@ public class EvaluationController {
         var result = evaluationService.create(evaluationDTO);
 
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("evaluation 생성 완료").data(result).build());
+    }
+
+    @PostMapping("read/all")
+    public ResponseEntity readAll(@RequestBody @Valid EvaluationReadRequest evaluationReadRequest, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(CommonResponse.builder()
+                    .code(400)
+                    .message("입력값 오류: " + errorMessage)
+                    .build());
+        }
+
+        userAccountRepository.findByUid(evaluationReadRequest.getUid())
+                .orElseThrow(() -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
+        TenantContext.setCurrentTenant(evaluationReadRequest.getUid());
+
+        var result = evaluationService.readAll();
+
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("evaluation 전체 조회 완료").data(result).build());
     }
 
 }
