@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class EgoController {
     private final EgoService egoService;
 
+    // ego 생성
     @PostMapping("create")
     public ResponseEntity create(@RequestBody @Valid EgoDTO egoDTO, BindingResult bindingResult) {
 
@@ -35,6 +36,7 @@ public class EgoController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 생성 완료").data(result).build());
     }
 
+    // ego테이블에 기록된 전체 ego조회
     @GetMapping("read/all")
     public ResponseEntity readAll() {
 
@@ -43,12 +45,29 @@ public class EgoController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 조회 완료").data(result).build());
     }
 
+    // egoid와 일치하는 ego조회
     @GetMapping("read/{egoid}")
-    public ResponseEntity read(@PathVariable("egoid")Long egoId){
+    public ResponseEntity read(@PathVariable("egoid") Long egoId) {
 
         var result = egoService.findById(egoId);
 
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 조회 완료").data(result).build());
+    }
+
+    // ego정보 수정
+    @PatchMapping("update")
+    public ResponseEntity update(@RequestBody EgoDTO egoDTO) {
+
+        if (egoDTO.getId() == null) {
+            ResponseEntity.badRequest().body(CommonResponse.builder()
+                    .code(400)
+                    .message("egoId는 필수 값입니다.")
+                    .build());
+        }
+
+        var result = egoService.update(egoDTO);
+
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 수정 완료").data(result).build());
     }
 
 }

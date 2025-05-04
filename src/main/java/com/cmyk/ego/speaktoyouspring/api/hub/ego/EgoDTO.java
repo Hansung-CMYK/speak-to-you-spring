@@ -1,6 +1,5 @@
 package com.cmyk.ego.speaktoyouspring.api.hub.ego;
 
-import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccount;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
