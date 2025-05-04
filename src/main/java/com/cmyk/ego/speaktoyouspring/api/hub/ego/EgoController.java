@@ -43,4 +43,12 @@ public class EgoController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 조회 완료").data(result).build());
     }
 
+    @GetMapping("read/{egoid}")
+    public ResponseEntity read(@PathVariable("egoid")Long egoId){
+
+        var result = egoService.findById(egoId);
+
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 조회 완료").data(result).build());
+    }
+
 }

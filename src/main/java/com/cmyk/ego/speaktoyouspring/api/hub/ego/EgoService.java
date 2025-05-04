@@ -1,5 +1,7 @@
 package com.cmyk.ego.speaktoyouspring.api.hub.ego;
 
+import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
+import com.cmyk.ego.speaktoyouspring.exception.errorcode.EgoErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,4 +29,10 @@ public class EgoService {
     public List<Ego> readAll(){
         return egoRepository.findAll();
     }
+
+    public Ego findById(Long egoId) {
+        return egoRepository.findById(egoId)
+                .orElseThrow(() -> new ControlledException(EgoErrorCode.ERROR_EGO_NOT_FOUND));
+    }
+
 }
