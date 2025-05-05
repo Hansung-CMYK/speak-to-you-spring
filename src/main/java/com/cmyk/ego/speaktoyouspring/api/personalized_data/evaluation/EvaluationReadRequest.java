@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.tenant.evaluation;
+package com.cmyk.ego.speaktoyouspring.api.personalized_data.evaluation;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

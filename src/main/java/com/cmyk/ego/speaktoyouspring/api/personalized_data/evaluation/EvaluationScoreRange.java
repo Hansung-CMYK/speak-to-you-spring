@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.tenant.evaluation;
+package com.cmyk.ego.speaktoyouspring.api.personalized_data.evaluation;
 
 public class EvaluationScoreRange {
     public static final int MIN_SCORE = 1;

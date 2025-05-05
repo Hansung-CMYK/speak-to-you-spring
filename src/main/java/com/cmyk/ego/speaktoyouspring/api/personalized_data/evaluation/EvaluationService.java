@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.tenant.evaluation;
+package com.cmyk.ego.speaktoyouspring.api.personalized_data.evaluation;
 
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.EvaluationErrorCode;

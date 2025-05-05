@@ -1,4 +1,4 @@
-package com.cmyk.ego.speaktoyouspring.api.tenant.evaluation;
+package com.cmyk.ego.speaktoyouspring.api.personalized_data.evaluation;
 
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
 import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
