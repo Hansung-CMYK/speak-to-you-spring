@@ -1,6 +1,6 @@
 package com.cmyk.ego.speaktoyouspring.config;
 
-import com.cmyk.ego.speaktoyouspring.api.hub.tenant.TenantService;
+import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountService;
 import com.cmyk.ego.speaktoyouspring.config.properties.HubProperties;
 import com.cmyk.ego.speaktoyouspring.config.properties.PersonalizedDataProperties;
 import jakarta.annotation.PostConstruct;
@@ -21,7 +21,7 @@ public class FlywayConfig {
     private final HubProperties hubProperties;
     private final FlywayProperties flywayProperties;
 
-    private final TenantService tenantService;
+    private final UserAccountService userAccountService;
 
     /// hub와 personalized-data Database를 마이그레이션(형상 관리) 하는 함수.
     @PostConstruct
@@ -34,9 +34,9 @@ public class FlywayConfig {
                 .load()
                 .migrate();
 
-        // 모든 스키마 정보(스키마 이름)를 얻는다.
-        // 현재 personalized-data Database의 개별 스키마는 hub.tenant.schemaName으로 등록되기 때문이다.
-        final Set<String> schemas = tenantService.getTenantName();
+        // 모든 스키마 정보(uid값)를 얻는다.
+        // 현재 personalized-data Database의 개별 스키마는 hub.user_account.uid로 등록되기 때문이다.
+        final Set<String> schemas = userAccountService.getAllUserUID();
 
         // personalized-data Database에 관한 정보를 명시한다.
         schemas.forEach(schema -> {
@@ -44,7 +44,7 @@ public class FlywayConfig {
                     .dataSource(personalizedDataProperties.getDataSource())
                     .locations(flywayProperties.getLocations().get(1))
                     .baselineOnMigrate(flywayProperties.isBaselineOnMigrate()) // 기존 DB를 기준점으로 설정할지 여부
-                    .defaultSchema(schema) // 개별 테넌트 스키마 이름 적용
+                    .defaultSchema(schema) // 개별 테넌트 스키마 이름 적용 (uid로 적용됨)
                     .load()
                     .migrate(); // 개별 테넌트에 대해 마이그레이션 실행
         });

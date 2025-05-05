@@ -21,25 +21,25 @@ import java.util.List;
 @Transactional(value = "tenantTransactionManager")
 public class TenantDatabaseService {
 
-  @Qualifier("tenantEntityManagerFactory")
-  private final EntityManager tenantEntityManager;
+    @Qualifier("tenantEntityManagerFactory")
+    private final EntityManager tenantEntityManager;
 
-  private final FlywayService flywayService;
+    private final FlywayService flywayService;
 
-  @SneakyThrows
-  public void initSchemas(List<String> tenantIds) {
-    tenantIds.forEach(
-        schemaName -> {
-          rollbackSchema(schemaName);
-          flywayService.createTenant(schemaName);
-        });
-  }
+//    @SneakyThrows
+//    public void initSchemas(List<String> userAccount) {
+//        userAccount.forEach(
+//                userAccountUID -> {
+//                    rollbackSchema(userAccountUID);
+//                    flywayService.createUserSchema(userAccountUID);
+//                });
+//    }
 
-  public void rollbackSchema(String schemaName) {
-    execute("DROP SCHEMA IF EXISTS " + schemaName + " CASCADE");
-  }
+    public void rollbackSchema(String schemaName) {
+        execute("DROP SCHEMA IF EXISTS " + schemaName + " CASCADE");
+    }
 
-  public void execute(String sql) {
-    tenantEntityManager.createNativeQuery(sql).executeUpdate();
-  }
+    public void execute(String sql) {
+        tenantEntityManager.createNativeQuery(sql).executeUpdate();
+    }
 }
