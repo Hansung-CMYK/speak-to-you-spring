@@ -1,5 +1,6 @@
 package com.cmyk.ego.speaktoyouspring.config.properties;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -15,11 +16,15 @@ public class PersonalizedDataProperties {
     private String password; // 비밀번호
 
     public DataSource getDataSource() {
-        return DataSourceBuilder
-                .create()
-                .url(jdbcUrl)
-                .username(username)
-                .password(password)
-                .build();
+        HikariDataSource ds = new HikariDataSource();
+        ds.setJdbcUrl(jdbcUrl);
+        ds.setUsername(username);
+        ds.setPassword(password);
+        ds.setMaximumPoolSize(10);
+        ds.setMinimumIdle(1);
+        ds.setIdleTimeout(10000);
+        ds.setMaxLifetime(30000);
+        ds.setConnectionTimeout(5000);
+        return ds;
     }
 }
