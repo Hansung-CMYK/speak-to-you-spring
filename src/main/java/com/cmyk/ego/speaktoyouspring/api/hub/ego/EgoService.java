@@ -1,5 +1,6 @@
 package com.cmyk.ego.speaktoyouspring.api.hub.ego;
 
+import com.cmyk.ego.speaktoyouspring.api.personalized_data.egolike.EgoLikeDTO;
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.EgoErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -59,4 +60,12 @@ public class EgoService {
         return ego;
     }
 
+    public Ego updateLike(EgoLikeDTO egoLikeDTO, int delta) {
+        Ego ego = egoRepository.findById(egoLikeDTO.getEgoId())
+                .orElseThrow(() -> new ControlledException(EgoErrorCode.ERROR_EGO_NOT_FOUND));
+
+        ego.setLikes(ego.getLikes() + delta);
+
+        return egoRepository.save(ego);
+    }
 }
