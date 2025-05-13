@@ -49,4 +49,6 @@ public class Ego {
     /// EGO 좋아요 개수
     @Column(name = "likes")
     private Long likes;
+
+    private Integer rating;
 }
