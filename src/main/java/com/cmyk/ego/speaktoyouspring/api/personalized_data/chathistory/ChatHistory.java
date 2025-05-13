@@ -34,4 +34,7 @@ public class ChatHistory {
 
   @Column(name = "is_deleted")
   private Boolean isDeleted = false;  // 삭제 여부
+
+  @Column(name = "message_hash")
+  private String messageHash;
 }

@@ -12,6 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,6 +39,12 @@ public class ChatHistoryService {
 
         if (chatHistoryDTO.getChatAt() == null) {
             chatHistoryDTO.setChatAt(LocalDateTime.parse(formattedDate, formatter));
+        }
+
+        // 메시지 해시값 생성
+        if (chatHistoryDTO.getMessageHash() == null) {
+            String hash = getSHA256Hash(chatHistoryDTO.getUid() + "|" + LocalDateTime.parse(formattedDate, formatter) + "|" + chatHistoryDTO.getContent());
+            chatHistoryDTO.setMessageHash(hash);
         }
 
         // 채팅방의 시간도 업데이트 해야함 (최신 채팅순 정렬을 위함)
@@ -111,5 +120,26 @@ public class ChatHistoryService {
         chatHistoryRepository.save(foundChatHistory);
 
         return foundChatHistory;
+    }
+
+    public static String getSHA256Hash(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+            return bytesToHex(encodedHash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String bytesToHex(byte[] hash) {
+        StringBuilder hexString = new StringBuilder(2 * hash.length);
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1)
+                hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 }
