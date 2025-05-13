@@ -139,4 +139,28 @@ public class ChatHistoryController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("대화 삭제 완료").data(result).build());
     }
 
+    /**
+     * 채팅내역 해시값으로 삭제
+     * 필수값 : uid, hash
+     */
+    @DeleteMapping("/{userid}/{hash}")
+    public ResponseEntity deleteByHash(@PathVariable("userid") String userid, @PathVariable("hash") String hash) {
+        if (userid == null || hash == null) {
+            return ResponseEntity.badRequest().body(CommonResponse.builder()
+                    .code(400)
+                    .message("입력값 오류: userid와 hash는 필수 값입니다.")
+                    .build());
+        }
+
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(userid).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
+        TenantContext.setCurrentTenant(userid);
+
+        var result = chatHistoryService.deleteChatHistoryByHash(hash);
+
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("대화 해시값으로 삭제 완료").data(result).build());
+    }
+
 }

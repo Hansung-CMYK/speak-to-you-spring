@@ -2,6 +2,8 @@ package com.cmyk.ego.speaktoyouspring.api.personalized_data.chathistory;
 
 import java.util.List;
 import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +17,7 @@ public interface ChatHistoryRepository extends JpaRepository<ChatHistory, Long> 
 
     // 채팅방 ID, 삭제 여부, 날짜를 기준으로 조회하는 메서드
     List<ChatHistory> findByChatRoomIdAndIsDeletedFalseAndChatAtBetween(Long chatRoomId, LocalDateTime start, LocalDateTime end);
+
+    // 삭제 처리되지 않은 hash 값을 가진 튜플 가져오기
+    Optional<ChatHistory> findByMessageHashAndIsDeletedFalse(String messageHash);
 }

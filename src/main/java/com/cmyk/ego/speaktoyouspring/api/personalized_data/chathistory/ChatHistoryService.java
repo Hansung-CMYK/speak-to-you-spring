@@ -122,6 +122,15 @@ public class ChatHistoryService {
         return foundChatHistory;
     }
 
+    public ChatHistory deleteChatHistoryByHash(String hash) {
+        ChatHistory foundChatHistory = chatHistoryRepository.findByMessageHashAndIsDeletedFalse(hash)
+                .orElseThrow(() -> new ControlledException(ChatHistoryErrorCode.ERROR_CHATHISTORY_NOT_EXISTS));
+
+        foundChatHistory.setIsDeleted(true);
+        return chatHistoryRepository.save(foundChatHistory);
+    }
+
+    // 문자열 기반으로 SHA-256 코드를 만드는 메서드
     public static String getSHA256Hash(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -132,6 +141,7 @@ public class ChatHistoryService {
         }
     }
 
+    // 바이트 값에 따라서 Hex 문자열로 변환하는 메서드
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (byte b : hash) {
