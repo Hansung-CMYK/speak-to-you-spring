@@ -27,6 +27,8 @@ public class ChatHistoryDTO {
 
     private Boolean isDeleted;
 
+    private String messageHash;
+
     public ChatHistory toEntity() {
         return ChatHistory.builder()
                 .uid(uid)
@@ -35,6 +37,7 @@ public class ChatHistoryDTO {
                 .type(type)
                 .chatAt(chatAt)
                 .isDeleted(isDeleted)
+                .messageHash(messageHash)
                 .build();
     }
 }
