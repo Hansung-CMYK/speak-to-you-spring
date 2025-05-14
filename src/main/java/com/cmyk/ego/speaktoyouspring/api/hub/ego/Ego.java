@@ -45,4 +45,10 @@ public class Ego {
     @Builder.Default
     @Column(name = "created_at")
     private LocalDate createdAt = LocalDate.now();
+
+    /// EGO 좋아요 개수
+    @Column(name = "likes")
+    private Long likes;
+
+    private Integer rating;
 }

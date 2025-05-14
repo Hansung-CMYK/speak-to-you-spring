@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,5 +57,9 @@ public class ChatRoomService {
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Order.desc("lastChatAt")));
 
         return chatRoomRepository.findByIsDeletedFalse(pageable);
+    }
+
+    public List<ChatRoom> getChatRooms() {
+        return chatRoomRepository.findAll();
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @Validated
 public class EgoController {
     private final EgoService egoService;
+    private final EgoApplicationService egoApplicationService;
 
     /**
      * ego 생성
@@ -78,4 +80,14 @@ public class EgoController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 수정 완료").data(result).build());
     }
 
+    /**
+     * EGO 정보 불러오기
+     */
+    @GetMapping("/{userid}/list")
+    public ResponseEntity getUserEgoList(@PathVariable("userid") String userId) {
+
+        List<Ego> result = egoApplicationService.getUserEgoList(userId);
+
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("연관된 ego 목록 조회 완료").data(result).build());
+    }
 }

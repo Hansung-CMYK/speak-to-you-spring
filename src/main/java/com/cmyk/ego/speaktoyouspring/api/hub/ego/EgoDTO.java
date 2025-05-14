@@ -34,6 +34,7 @@ public class EgoDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate createdAt;             // 생성 날짜
 
+    private Long likes;
 
     public Ego toEntity() {
         return Ego.builder()
@@ -44,6 +45,7 @@ public class EgoDTO {
                 .mbti(mbti)
                 .personality(personality)
                 .createdAt(createdAt)
+                .likes(likes)
                 .build();
     }
 }
