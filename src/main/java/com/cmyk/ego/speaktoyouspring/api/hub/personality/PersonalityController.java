@@ -41,7 +41,7 @@ public class PersonalityController {
     @Operation(summary = "성격 추가 API")
     @PostMapping("/")
     public ResponseEntity add(@RequestBody ContentRequest contentRequest) {
-        var result = personalityService.add(contentRequest);
+        var result = personalityService.add(contentRequest.getContent());
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("성격 추가 완료").data(result).build());
     }
 

@@ -29,8 +29,7 @@ public class Ego {
     private String introduction;
 
     /// EGO 프로필 이미지 (Byte 데이터)
-    @Lob
-    @Column(name = "profile_image")
+    @Column(name = "profile_image", columnDefinition = "BYTEA")
     private byte[] profileImage;
 
     /// EGO MBTI 성격 유형

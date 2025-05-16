@@ -29,8 +29,7 @@ public class PersonalityService {
     }
 
     /// 성격 추가
-    public Personality add(ContentRequest contentRequest) {
-        String content = contentRequest.getContent();
+    public Personality add(String content) {
         return personalityRepository
                 .findByContent(content)
                 .orElseGet(() -> personalityRepository.save(new Personality(null, content)));
@@ -41,7 +40,7 @@ public class PersonalityService {
         List<String> newPersonalityList = new ArrayList<>();
         // 새로 생성
         for (String content : contentListRequest.getContentList()) {
-            Personality personality = add(new ContentRequest(content));
+            Personality personality = add(content);
             newPersonalityList.add(personality.getContent());
         }
         return newPersonalityList;
