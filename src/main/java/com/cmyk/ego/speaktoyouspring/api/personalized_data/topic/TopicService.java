@@ -20,9 +20,6 @@ public class TopicService {
 
     /**
      * 일기 토픽 내용을 저장한다.
-     * @param topics
-     * @param diaryId
-     * @return
      */
     public List<Topic> saveAll(List<TopicDTO> topics, Long diaryId) {
         deleteByDiaryId(diaryId);
@@ -32,7 +29,6 @@ public class TopicService {
 
     /**
      * diaryId를 기반으로 과거에 일기 내용 지우기
-     * @param diaryId
      */
     public void deleteByDiaryId(Long diaryId) {
         List<Topic> oldTopicList = topicRepository.findByDiaryIdAndIsDeletedFalse(diaryId);
@@ -41,12 +37,11 @@ public class TopicService {
     }
 
     public List<TopicDTO> convertTopicListToDTOList(List<Topic> topics){
-        return topics.stream().map(topic -> new TopicDTO(topic.getTopicId(), topic.getDiaryId(), topic.getTitle(), topic.getContent(), topic.getIsDeleted())).toList();
+        return topics.stream().map(topic -> new TopicDTO(topic.getTopicId(), topic.getDiaryId(), topic.getTitle(), topic.getContent(), TopicDTO.encodedPicture(topic.getPicture()), topic.getIsDeleted())).toList();
     }
 
     /**
      * 일기 토픽 내용을 삭제한다.
-     * @param topicId
      */
     public Topic deleteById(String userId, Long topicId) {
         String uid = userId;

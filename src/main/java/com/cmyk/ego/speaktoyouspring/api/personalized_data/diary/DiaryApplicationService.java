@@ -1,6 +1,9 @@
 package com.cmyk.ego.speaktoyouspring.api.personalized_data.diary;
 
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
+import com.cmyk.ego.speaktoyouspring.api.personalized_data.diarykeyword.DiaryKeyword;
+import com.cmyk.ego.speaktoyouspring.api.personalized_data.diarykeyword.DiaryKeywordDTO;
+import com.cmyk.ego.speaktoyouspring.api.personalized_data.diarykeyword.DiaryKeywordService;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.topic.TopicDTO;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.topic.TopicService;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
@@ -18,6 +21,7 @@ import java.util.List;
 public class DiaryApplicationService {
     private final DiaryService diaryService;
     private final TopicService topicService;
+    private final DiaryKeywordService diaryKeywordService;
     private final UserAccountRepository userAccountRepository;
 
     /**
@@ -31,10 +35,15 @@ public class DiaryApplicationService {
 
         TenantContext.setCurrentTenant(uid);
 
+        // 일기 생성
         Diary diary = diaryService.upsert(diaryDTO);
         List<TopicDTO> topicDTOList = topicService.convertTopicListToDTOList(topicService.saveAll(diaryDTO.getTopics(), diary.getDiaryId()));
 
-        return new DiaryDTO(diary.getDiaryId(), diary.getUid(), diary.getEgoId(), diary.getFeeling(), diary.getDailyComment(),diary.getCreatedAt(), topicDTOList);
+        // 키워드 저장
+        List<DiaryKeywordDTO> diaryKeywordDTOList = diaryDTO.getKeywords().stream().map(keyword -> new DiaryKeywordDTO(null, diary.getDiaryId(), keyword)).toList();
+        diaryKeywordService.saveAll(uid, diaryKeywordDTOList);
+
+        return new DiaryDTO(diary.getDiaryId(), diary.getUid(), diary.getEgoId(), diary.getFeeling(), diary.getDailyComment(),diary.getCreatedAt(), diaryDTO.getKeywords(), topicDTOList);
     }
 
     /**
@@ -49,7 +58,7 @@ public class DiaryApplicationService {
 
         Diary diary = diaryService.findByDiaryId(diaryId);
         List<TopicDTO> topicDTOList = topicService.convertTopicListToDTOList(topicService.findByDiaryId(diaryId));
-
-        return new DiaryDTO(diary.getDiaryId(), diary.getUid(), diary.getEgoId(), diary.getFeeling(), diary.getDailyComment(),diary.getCreatedAt(), topicDTOList);
+        List<String> keyword = diaryKeywordService.findByDiaryId(userId, diaryId).stream().map(DiaryKeyword::getContent).toList();
+        return new DiaryDTO(diary.getDiaryId(), diary.getUid(), diary.getEgoId(), diary.getFeeling(), diary.getDailyComment(),diary.getCreatedAt(), keyword, topicDTOList);
     }
 }

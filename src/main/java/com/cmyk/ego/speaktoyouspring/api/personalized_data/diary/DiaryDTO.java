@@ -37,9 +37,13 @@ public class DiaryDTO {
     @Schema(example = "2025-05-06")
     private LocalDate createdAt; // 일기 생성 날짜
 
+    @Schema(example = "[\"엥\", \"진짜?\", \"아니\", \"근데\"]")
+    private List<String> keywords; // 일기 일별 키워드
+   
+    
    @Schema(example = "[{\"title\": \"웃음이 가득한 아침 식사\", \"content\": \"오늘은 가족들과 웃음이 가득한 아침 식사를 했어요. 맛있는 퐁듀를 2그릇이나 먹었어요.\", \"isDeleted\": false}, {\"title\": \"나른한 오후의 만난 삼색 고양이\", \"content\": \"노을이 질 때 즈음에 삼색 고양이를 봤어요. 참치를 간식으로 주었어요.\", \"isDeleted\": false}]")
    private List<TopicDTO> topics;
-
+   
     public Diary toEntity() {
         return Diary.builder()
                 .diaryId(diaryId)
