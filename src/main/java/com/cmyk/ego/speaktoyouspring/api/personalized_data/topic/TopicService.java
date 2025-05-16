@@ -37,7 +37,7 @@ public class TopicService {
     }
 
     public List<TopicDTO> convertTopicListToDTOList(List<Topic> topics){
-        return topics.stream().map(topic -> new TopicDTO(topic.getTopicId(), topic.getDiaryId(), topic.getTitle(), topic.getContent(), topic.getPicture(), topic.getIsDeleted())).toList();
+        return topics.stream().map(topic -> new TopicDTO(topic.getTopicId(), topic.getDiaryId(), topic.getTitle(), topic.getContent(), topic.getUrl(), topic.getIsDeleted())).toList();
     }
 
     /**
@@ -75,7 +75,7 @@ public class TopicService {
     /**
      * 일기 사진을 업데이트 한다.
      */
-    public Topic updateTopicImage(String userId, Long topicId, String picture) {
+    public Topic updateTopicImage(String userId, Long topicId, String url) {
         String uid = userId;
         // 전달받은 Uid가 있는지 확인
         userAccountRepository.findByUid(uid).orElseThrow(
@@ -83,7 +83,7 @@ public class TopicService {
         TenantContext.setCurrentTenant(uid);
 
         Topic topic = topicRepository.findByTopicIdAndIsDeletedFalse(topicId).orElseThrow(() -> new ControlledException(TopicErrorCode.ERROR_TOPIC_NOT_FOUND));
-        topic.setPicture(picture);
+        topic.setUrl(url);
 
         return topicRepository.save(topic);
     }

@@ -40,7 +40,7 @@ public class TopicController {
     /**
      * 특정 Topic 사진 수정하는 API
      */
-    @PatchMapping(value = "{userId}/{topicId}/picture")
+    @PatchMapping(value = "{userId}/{topicId}/url")
     @Operation(summary = "Topic 사진 수정 API", description = "특정 Topic의 사진을 수정하는 API")
     public ResponseEntity updateTopicImage(@PathVariable String userId, @PathVariable("topicId") Long topicId, @RequestBody String url) throws IOException {
         var result = topicService.updateTopicImage(userId, topicId, url);

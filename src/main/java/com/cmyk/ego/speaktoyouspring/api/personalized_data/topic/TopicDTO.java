@@ -27,7 +27,7 @@ public class TopicDTO {
     private String content;
 
     @Schema(example = "https://fal.media/files/penguin/vX86khImmFa6A8JgBpD0g_66de42358e1146a8a4b689d1e0e96e1d.jpg")
-    private String picture;
+    private String url;
 
     @Schema(example = "false")
     private Boolean isDeleted;
@@ -39,31 +39,30 @@ public class TopicDTO {
                 .diaryId(diaryId)
                 .title(title)
                 .content(content)
-                .picture(picture)
+                .url(url)
                 .isDeleted(isDeleted)
                 .build();
     }
 
-    public static byte[] decodedPicture(String encodedPicture) {
-        byte[] decodedPicture = null;
-        if (encodedPicture != null && !encodedPicture.isBlank()) {
+    public static byte[] decodedUrl(String encodedUrl) {
+        byte[] decodedUrl = null;
+        if (encodedUrl != null && !encodedUrl.isBlank()) {
             try {
-                decodedPicture = Base64.getDecoder().decode(encodedPicture);
+                decodedUrl = Base64.getDecoder().decode(encodedUrl);
             } catch (IllegalArgumentException e) {
                 // 디코딩 실패 시 로그 출력
                 System.err.println("Base64 decoding failed: " + e.getMessage());
             }
         }
-        System.out.println("Decoded picture size: " + (decodedPicture != null ? decodedPicture.length : "null"));
 
-        return decodedPicture;
+        return decodedUrl;
     }
 
-    public static String encodedPicture(byte[] picture) {
-        String encodedPicture = null;
-        if (picture != null && picture.length > 0) {
-            encodedPicture = Base64.getEncoder().encodeToString(picture);
+    public static String encodedUrl(byte[] url) {
+        String encodedUrl = null;
+        if (url != null && url.length > 0) {
+            encodedUrl = Base64.getEncoder().encodeToString(url);
         }
-        return encodedPicture;
+        return encodedUrl;
     }
 }
