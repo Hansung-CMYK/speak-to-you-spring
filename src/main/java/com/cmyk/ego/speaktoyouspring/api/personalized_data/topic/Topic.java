@@ -25,8 +25,8 @@ public class Topic {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "picture", columnDefinition = "BYTEA")
-    private byte[] picture;
+    @Column(name = "picture")
+    private String picture;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;

@@ -34,10 +34,11 @@ public class DiaryKeywordService {
 
     /**
      * DiaryKeyword 객체를 DiaryKeywordDTO 객체로 변환한다.
+     *
      * @param diaryKeyword
      * @return
      */
-    public DiaryKeywordDTO convertDiaryKeywordToDTO(DiaryKeyword diaryKeyword){
+    public DiaryKeywordDTO convertDiaryKeywordToDTO(DiaryKeyword diaryKeyword) {
         return new DiaryKeywordDTO(diaryKeyword.getKeywordId(), diaryKeyword.getDiaryId(), diaryKeyword.getContent());
     }
 
@@ -71,5 +72,19 @@ public class DiaryKeywordService {
             DiaryKeyword diaryKeyword = diaryKeywordDTO.toEntity();
             diaryKeywordRepository.save(diaryKeyword);
         });
+    }
+
+    /**
+     * diaryId에 해당하는 키워드를 삭제한다.
+     */
+    public void deleteByDiaryId(String userId, Long diaryId) {
+        String uid = userId;
+
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(uid).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+        TenantContext.setCurrentTenant(uid);
+
+        this.deleteByDiaryId(diaryId);
     }
 }

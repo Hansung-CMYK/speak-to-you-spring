@@ -2,9 +2,7 @@ package com.cmyk.ego.speaktoyouspring.api.personalized_data.topic;
 
 import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,11 +40,10 @@ public class TopicController {
     /**
      * 특정 Topic 사진 수정하는 API
      */
-    @PatchMapping(value = "{userId}/{topicId}/picture", consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @PatchMapping(value = "{userId}/{topicId}/picture")
     @Operation(summary = "Topic 사진 수정 API", description = "특정 Topic의 사진을 수정하는 API")
-    public ResponseEntity updateTopicImage(@PathVariable String userId, @PathVariable("topicId") Long topicId, HttpServletRequest request) throws IOException {
-        byte[] content = request.getInputStream().readAllBytes();
-        var result = topicService.updateTopicImage(userId, topicId, content);
+    public ResponseEntity updateTopicImage(@PathVariable String userId, @PathVariable("topicId") Long topicId, @RequestBody String url) throws IOException {
+        var result = topicService.updateTopicImage(userId, topicId, url);
 
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("일기 저장 완료").data(result).build());
     }

@@ -1,8 +1,6 @@
 package com.cmyk.ego.speaktoyouspring.api.personalized_data.topic;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,12 +26,7 @@ public class TopicDTO {
     @Schema(example = "오늘은 가족들과 웃음이 가득한 아침 식사를 했어요. 맛있는 퐁듀를 2그릇이나 먹었어요.")
     private String content;
 
-    @Schema(
-            description = "Base64 인코딩된 이미지 데이터",
-            type = "string",
-            format = "byte",
-            example = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACN"
-    )
+    @Schema(example = "https://fal.media/files/penguin/vX86khImmFa6A8JgBpD0g_66de42358e1146a8a4b689d1e0e96e1d.jpg")
     private String picture;
 
     @Schema(example = "false")
@@ -46,7 +39,7 @@ public class TopicDTO {
                 .diaryId(diaryId)
                 .title(title)
                 .content(content)
-                .picture(decodedPicture(picture))
+                .picture(picture)
                 .isDeleted(isDeleted)
                 .build();
     }

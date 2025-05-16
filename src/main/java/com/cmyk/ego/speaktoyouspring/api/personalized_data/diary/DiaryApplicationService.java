@@ -41,9 +41,10 @@ public class DiaryApplicationService {
 
         // 키워드 저장
         List<DiaryKeywordDTO> diaryKeywordDTOList = diaryDTO.getKeywords().stream().map(keyword -> new DiaryKeywordDTO(null, diary.getDiaryId(), keyword)).toList();
+        diaryKeywordService.deleteByDiaryId(uid, diary.getDiaryId());
         diaryKeywordService.saveAll(uid, diaryKeywordDTOList);
 
-        return new DiaryDTO(diary.getDiaryId(), diary.getUid(), diary.getEgoId(), diary.getFeeling(), diary.getDailyComment(),diary.getCreatedAt(), diaryDTO.getKeywords(), topicDTOList);
+        return new DiaryDTO(diary.getDiaryId(), diary.getUid(), diary.getEgoId(), diary.getFeeling(), diary.getDailyComment(), diary.getCreatedAt(), diaryDTO.getKeywords(), topicDTOList);
     }
 
     /**
@@ -59,6 +60,6 @@ public class DiaryApplicationService {
         Diary diary = diaryService.findByDiaryId(diaryId);
         List<TopicDTO> topicDTOList = topicService.convertTopicListToDTOList(topicService.findByDiaryId(diaryId));
         List<String> keyword = diaryKeywordService.findByDiaryId(userId, diaryId).stream().map(DiaryKeyword::getContent).toList();
-        return new DiaryDTO(diary.getDiaryId(), diary.getUid(), diary.getEgoId(), diary.getFeeling(), diary.getDailyComment(),diary.getCreatedAt(), keyword, topicDTOList);
+        return new DiaryDTO(diary.getDiaryId(), diary.getUid(), diary.getEgoId(), diary.getFeeling(), diary.getDailyComment(), diary.getCreatedAt(), keyword, topicDTOList);
     }
 }
