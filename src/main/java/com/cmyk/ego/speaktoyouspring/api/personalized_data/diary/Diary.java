@@ -27,6 +27,9 @@ public class Diary {
     @Column(name = "feeling")
     private String feeling; // 오늘의 감정
 
+    @Column(name = "daily_comment")
+    private String dailyComment;
+
     @Column(name = "created_at")
     private LocalDate createdAt;
 }

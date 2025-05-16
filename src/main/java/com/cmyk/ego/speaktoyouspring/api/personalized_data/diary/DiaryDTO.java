@@ -28,7 +28,10 @@ public class DiaryDTO {
 
     @Schema(example = "활기찬, 뿌듯한")
     private String feeling; // 오늘의 감정
-    
+
+    @Schema(example = "오늘은 아주 활발한 하루였어요! 특히 냥 체를 많이 사용하셨네요!")
+    private String dailyComment;
+
     @NotNull(message = "일기 생성 날짜는 필수 입니다.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Schema(example = "2025-05-06")
@@ -43,6 +46,7 @@ public class DiaryDTO {
                 .uid(uid)
                 .egoId(egoId)
                 .createdAt(createdAt)
+                .dailyComment(dailyComment)
                 .build();
     }
 }

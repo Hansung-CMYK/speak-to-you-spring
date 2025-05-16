@@ -1,0 +1,1 @@
+ALTER TABLE diary ADD COLUMN daily_comment VARCHAR(255); -- 일기별 오늘의 한 줄 요약

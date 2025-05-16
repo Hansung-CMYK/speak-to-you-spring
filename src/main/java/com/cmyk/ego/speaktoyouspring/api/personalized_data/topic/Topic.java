@@ -25,6 +25,10 @@ public class Topic {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
+    @Lob
+    @Column(name = "picture")
+    private byte[] picture;
+
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 }
