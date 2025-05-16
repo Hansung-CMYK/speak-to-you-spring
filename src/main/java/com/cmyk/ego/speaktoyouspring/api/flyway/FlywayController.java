@@ -26,7 +26,7 @@ public class FlywayController {
 
     private final UserAccountService userAccountService;
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity migrateFlyway() {
         // hub Database에 관한 정보를 명시한다.
         Flyway.configure()
