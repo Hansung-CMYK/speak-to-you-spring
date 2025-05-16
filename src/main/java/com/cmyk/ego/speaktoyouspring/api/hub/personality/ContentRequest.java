@@ -11,4 +11,7 @@ import lombok.NoArgsConstructor;
 public class ContentRequest {
     @Schema(example = "늘정주나")
     private String content;
+
+    @Schema(example = "assets/image/game_chat_room.png")
+    private String imageUrl;
 }

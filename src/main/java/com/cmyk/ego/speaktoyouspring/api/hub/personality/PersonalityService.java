@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -32,16 +33,35 @@ public class PersonalityService {
     public Personality add(String content) {
         return personalityRepository
                 .findByContent(content)
-                .orElseGet(() -> personalityRepository.save(new Personality(null, content)));
+                .orElseGet(() -> personalityRepository.save(new Personality(null, content, null)));
+    }
+
+    /// 성격 추가
+    public Personality add(ContentRequest content) {
+        Personality existing = personalityRepository.findByContent(content.getContent()).orElse(null);
+
+        if (existing != null) {
+            // imageUrl이 다르면 업데이트
+            if (!Objects.equals(existing.getImageUrl(), content.getImageUrl())) {
+                existing.setImageUrl(content.getImageUrl());
+                return personalityRepository.save(existing); // 변경 저장
+            }
+            return existing; // 동일하면 그대로 반환
+        }
+
+        // 없으면 새로 저장
+        return personalityRepository.save(
+                new Personality(null, content.getContent(), content.getImageUrl())
+        );
     }
 
     /// 성격 리스트 추가
-    public List<String> addList(ContentListRequest contentListRequest) {
-        List<String> newPersonalityList = new ArrayList<>();
+    public List<Personality> addList(ContentListRequest contentListRequest) {
+        List<Personality> newPersonalityList = new ArrayList<>();
         // 새로 생성
-        for (String content : contentListRequest.getContentList()) {
+        for (ContentRequest content : contentListRequest.getContentList()) {
             Personality personality = add(content);
-            newPersonalityList.add(personality.getContent());
+            newPersonalityList.add(personality);
         }
         return newPersonalityList;
     }

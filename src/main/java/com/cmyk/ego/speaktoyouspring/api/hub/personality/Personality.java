@@ -18,4 +18,7 @@ public class Personality {
 
     @Column(name = "content", nullable = false, unique = true)
     private String content;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 }

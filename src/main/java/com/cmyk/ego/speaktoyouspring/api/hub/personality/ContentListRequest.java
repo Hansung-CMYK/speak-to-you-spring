@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContentListRequest {
-    @Schema(example = "[\"늘정주나\", \"시간마술사\", \"존댓말자동완성\", \"식사개근\", \"유교휴먼\", \"TMI장인\", \"콘센트헌터\"]")
-    private List<String> contentList;
+    @Schema(example = "[{\"content\":\"늘정주나\", \"imageUrl\": \"assets/image/game_chat_room.png\"}, {\"content\":\"시간마술사\", \"imageUrl\": \"assets/image/movie_chat_room.png\"}, {\"content\":\"존댓말자동완성\", \"imageUrl\": \"assets/image/music_chat_room.png\"}, {\"content\":\"유교휴먼\", \"imageUrl\": \"assets/image/anime_chat_room.png\"}]")
+    private List<ContentRequest> contentList;
 }

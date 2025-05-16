@@ -58,7 +58,7 @@ public class PersonalityController {
     /**
      * 성격 전체 삭제
      */
-    @Operation(summary = "성격 전체 삭제 API")
+    @Operation(summary = "성격 전체 삭제 API *테스트용으로도 실행을 권장하지 않음*")
     @DeleteMapping("/")
     public ResponseEntity deleteAll() {
         personalityService.deleteAll();
