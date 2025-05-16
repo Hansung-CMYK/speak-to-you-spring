@@ -42,8 +42,11 @@ public class TopicController {
      */
     @PatchMapping(value = "{userId}/{topicId}/url")
     @Operation(summary = "Topic 사진 수정 API", description = "특정 Topic의 사진을 수정하는 API")
-    public ResponseEntity updateTopicImage(@PathVariable String userId, @PathVariable("topicId") Long topicId, @RequestBody String url) throws IOException {
-        var result = topicService.updateTopicImage(userId, topicId, url);
+    public ResponseEntity updateTopicImage(
+            @PathVariable String userId,
+            @PathVariable("topicId") Long topicId,
+            @RequestBody UrlRequest urlRequest) {
+        var result = topicService.updateTopicImage(userId, topicId, urlRequest.getUrl());
 
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("일기 저장 완료").data(result).build());
     }
