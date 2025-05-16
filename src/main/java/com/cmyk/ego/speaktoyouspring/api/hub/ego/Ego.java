@@ -37,10 +37,6 @@ public class Ego {
     @Column(name = "mbti", length = 4)
     private String mbti;
 
-    /// EGO 성격 설명
-    @Column(name = "personality", length = 255)
-    private String personality;
-
     /// EGO 생성 날짜
     @Builder.Default
     @Column(name = "created_at")

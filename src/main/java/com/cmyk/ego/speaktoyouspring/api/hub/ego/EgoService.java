@@ -58,8 +58,8 @@ public class EgoService {
             ego.setProfileImage(egoDTO.getProfileImage());
         if (egoDTO.getMbti() != null)
             ego.setMbti(egoDTO.getMbti());
-        if (egoDTO.getPersonality() != null)
-            ego.setPersonality(egoDTO.getPersonality());
+        // if (egoDTO.getPersonality() != null)
+        // ego.setPersonality(egoDTO.getPersonality());
         if (egoDTO.getCreatedAt() != null)
             ego.setCreatedAt(egoDTO.getCreatedAt());
 

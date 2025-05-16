@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Builder
@@ -36,6 +37,8 @@ public class EgoDTO {
 
     private Long likes;
 
+    private List<String> personalityList;
+
     public Ego toEntity() {
         return Ego.builder()
                 .id(id)
@@ -43,7 +46,6 @@ public class EgoDTO {
                 .introduction(introduction)
                 .profileImage(profileImage)
                 .mbti(mbti)
-                .personality(personality)
                 .createdAt(createdAt)
                 .likes(likes)
                 .build();
