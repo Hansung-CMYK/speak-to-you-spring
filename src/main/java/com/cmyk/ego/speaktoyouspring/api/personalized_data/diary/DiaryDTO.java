@@ -50,6 +50,7 @@ public class DiaryDTO {
                 .uid(uid)
                 .egoId(egoId)
                 .createdAt(createdAt)
+                .feeling(feeling)
                 .dailyComment(dailyComment)
                 .build();
     }
