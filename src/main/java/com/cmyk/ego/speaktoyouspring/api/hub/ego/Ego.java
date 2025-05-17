@@ -29,17 +29,12 @@ public class Ego {
     private String introduction;
 
     /// EGO 프로필 이미지 (Byte 데이터)
-    @Lob
-    @Column(name = "profile_image")
+    @Column(name = "profile_image", columnDefinition = "BYTEA")
     private byte[] profileImage;
 
     /// EGO MBTI 성격 유형
     @Column(name = "mbti", length = 4)
     private String mbti;
-
-    /// EGO 성격 설명
-    @Column(name = "personality", length = 255)
-    private String personality;
 
     /// EGO 생성 날짜
     @Builder.Default

@@ -23,7 +23,7 @@ public class EgoLikeController {
     /**
      * ego 좋아요 등록
      */
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity update(@RequestBody EgoLikeDTO egoLikeDTO) {
 
         // 전달받은 Uid가 있는지 확인
