@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -164,72 +165,94 @@ public class ChatHistoryService {
         return hexString.toString();
     }
 
-    ///
-    public List<List<Map<String, Object>>> getChatHistoryByChatRoomId(String userid, String datetime) {
-        List<List<Map<String, Object>>> list = new ArrayList<>();
+    // 사용자의 채팅 내역을 조회하여 날짜별로 그룹화된 결과를 반환
+    public List<List<Map<String, Object>>> getChatHistoryByUidAndDate(String userid, String datetime) {
+        List<List<Map<String, Object>>> result = new ArrayList<>();
+
+        // 1. Firestore에서 해당 유저의 채팅 내역 조회 (특정 날짜 기준)
         List<Map<String, Object>> userChatList = getFirestoreChatHistory(userid, datetime);
-        list.add(userChatList);
+        result.add(userChatList);
 
+        // 2. 날짜 범위 추출 (예: 하루의 시작~끝, 또는 다중 일자)
         List<LocalDateTime> dayList = convertStringToDayList(datetime);
-        List<Map<String, Object>> egoChatList = new ArrayList<>();
-        chatHistoryRepository.findByChatAtBetweenAndIsDeletedFalse(dayList.getFirst(), dayList.getLast()).forEach(chatHistory -> {
-            Map<String, Object> chatHistoryMap = Map.of(
-                    "uid", chatHistory.getUid(),
-                    "type", chatHistory.getType(),
-                    "content", chatHistory.getContent(),
-                    "chat_at", formatDate(java.sql.Timestamp.valueOf(chatHistory.getChatAt()))
-            );
 
-            egoChatList.add(chatHistoryMap);
-        });
-        list.add(egoChatList);
+        // 3. RDB에서 삭제되지 않은 전체 채팅 내역 조회 (날짜 범위 내)
+        List<ChatHistory> allChats = chatHistoryRepository.findByChatAtBetweenAndIsDeletedFalse(
+                dayList.getFirst(), dayList.getLast()
+        );
 
-        return list;
+        // 4. 채팅방 ID → 시간순으로 정렬
+        allChats.sort(
+                Comparator.comparing(ChatHistory::getChatRoomId)
+                        .thenComparing(ChatHistory::getChatAt)
+        );
+
+        // 5. 채팅방별로 그룹화
+        Map<Long, List<ChatHistory>> groupedByRoom = allChats.stream()
+                .collect(Collectors.groupingBy(ChatHistory::getChatRoomId));
+
+        // 6. 각 채팅방별로 사용자 채팅 내역을 리스트에 추가
+        for (List<ChatHistory> chatList : groupedByRoom.values()) {
+            List<Map<String, Object>> chatGroup = new ArrayList<>();
+
+            for (ChatHistory chat : chatList) {
+                chatGroup.add(Map.of(
+                        "uid", chat.getUid(),
+                        "type", chat.getType(),
+                        "content", chat.getContent(),
+                        "chat_at", formatDate(java.sql.Timestamp.valueOf(chat.getChatAt()))
+                ));
+            }
+
+            result.add(chatGroup);
+        }
+
+        return result;
     }
 
-    private List<Map<String, Object>> getFirestoreChatHistory(String userid, String datetime){
-
-        // 작성을 원하는 ~ 날짜의 문자열을 Date 객체로 변환 (형식: yyyy-MM-dd)
-        Date targetDate = parseDate(datetime);
-
-        Firestore db = FirestoreClient.getFirestore();
+    private List<Map<String, Object>> getFirestoreChatHistory(String userid, String datetime) {
         List<Map<String, Object>> result = new ArrayList<>();
+        Date targetDate = parseDate(datetime);
+        Firestore db = FirestoreClient.getFirestore();
 
-        // chats/user_chat/ 하위 [컬렉션]들 조회 (ex. user1_user2, user3_user1 등)
-        for (CollectionReference chatCollection : db.collection("chats").document("user_chat").listCollections()) {
-            // 해당 컬렉션명이 요청한 사용자 ID를 포함하는 경우만 처리
+        // chats/user_chat 하위의 모든 컬렉션(=채팅방) 탐색
+        for (CollectionReference chatCollection : db.collection("chats")
+                .document("user_chat")
+                .listCollections()) {
+            // 사용자의 ID를 포함하지 않는 컬렉션은 무시
             if (!chatCollection.getId().contains(userid)) continue;
 
             try {
-                // 필드 중 timestamp를 기준으로 오름차순으로 채팅 메세지 [문서]들 정렬
+                // 채팅 메시지를 timestamp 기준 오름차순 정렬
                 List<QueryDocumentSnapshot> documents = chatCollection
                         .orderBy("timestamp", Query.Direction.ASCENDING)
                         .get().get().getDocuments();
 
-            // 채팅 메세지 [문서] 하나씩 순회하면서 요청한 날짜 필터링 및 결과 리스트에 추가
-            for (QueryDocumentSnapshot doc : documents) {
-                Timestamp timestamp = doc.getTimestamp("timestamp");
+                for (QueryDocumentSnapshot doc : documents) {
+                    Timestamp timestamp = doc.getTimestamp("timestamp");
 
-                // timestamp가 없거나 날짜가 일치하지 않으면 skip
-                if (timestamp == null || !isSameDay(timestamp.toDate(), targetDate)) continue;
+                    // 유효하지 않거나 날짜가 다르면 건너뜀
+                    if (timestamp == null || !isSameDay(timestamp.toDate(), targetDate)) continue;
 
-                // 결과 리스트에 담을 필드만 추출하여 Map 생성
-                result.add(Map.of(
-                        "uid", Objects.requireNonNull(doc.getString("sender_id")), // 보낸 사람 UID
-                        "type", Objects.requireNonNull(doc.getString("sender_id")).equals(userid) ? "U" : "O",
-                        "content", Objects.requireNonNull(doc.getString("text")), // 채팅 내용
-                        "chat_at", formatDate(timestamp.toDate()) // 보낸 날짜 (yyyy-MM-dd)
-                ));
-            }
+                    // 필요한 필드만 추출하여 Map 형태로 저장
+                    result.add(Map.of(
+                            "uid", Objects.requireNonNull(doc.getString("sender_id")),
+                            "type", doc.getString("sender_id").equals(userid) ? "U" : "O",
+                            "content", Objects.requireNonNull(doc.getString("text")),
+                            "chat_at", formatDate(timestamp.toDate())
+                    ));
+                }
+
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }
+
         return result;
     }
 
-    // 날짜 파싱 (yyyy-MM-dd)
+    // yyyy-MM-dd 형식 문자열을 Date 객체로 변환
     private Date parseDate(String dateStr) {
         try {
             return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateStr);
@@ -238,18 +261,18 @@ public class ChatHistoryService {
         }
     }
 
-    // Date → yyyy-MM-dd 문자열
+    // Date → yyyy-MM-dd 문자열로 포맷
     private String formatDate(Date date) {
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
     }
 
-    // 두 날짜가 같은 일인지 비교
+    // 두 날짜가 같은 날인지 비교
     private boolean isSameDay(Date d1, Date d2) {
         Calendar c1 = Calendar.getInstance();
         Calendar c2 = Calendar.getInstance();
         c1.setTime(d1);
         c2.setTime(d2);
-        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
-                && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR);
+        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR) &&
+                c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR);
     }
 }

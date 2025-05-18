@@ -180,7 +180,7 @@ public class ChatHistoryController {
             return ResponseEntity.badRequest().body("유효하지 않은 일자 형식입니다. yyyy-MM-dd로 입력해주세요.");
         }
 
-        var result = chatHistoryService.getChatHistoryByChatRoomId(userid, datetime);
+        var result = chatHistoryService.getChatHistoryByUidAndDate(userid, datetime);
 
         return ResponseEntity.ok(CommonResponse.builder()
                 .code(200)
