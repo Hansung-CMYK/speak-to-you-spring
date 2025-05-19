@@ -24,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -35,9 +36,9 @@ public class ChatHistoryService {
     private final ChatHistoryRepository chatHistoryRepository;
     private final ChatRoomRepository chatRoomRepository;
 
-    public ChatHistory create(ChatHistoryDTO chatHistoryDTO){
+    public ChatHistory create(ChatHistoryDTO chatHistoryDTO) {
 
-        if(chatHistoryDTO.getIsDeleted() == null){
+        if (chatHistoryDTO.getIsDeleted() == null) {
             chatHistoryDTO.setIsDeleted(false);
         }
 
@@ -74,7 +75,7 @@ public class ChatHistoryService {
 
     /**
      * 전체 채팅 내역을 page단위로 조회
-     * */
+     */
     public Page<ChatHistory> getPagedChatHistories(int pageNum, int pageSize) {
 
         // Pageable 객체를 생성 (from, to는 페이지 번호 기준으로 0부터 시작)
@@ -88,7 +89,7 @@ public class ChatHistoryService {
 
     /**
      * 하루치 채팅 내역 조회
-     * */
+     */
     public List<ChatHistory> getDailyChatHistories(Long chatRoomId, String dateString) {
         List<LocalDateTime> dayList = convertStringToDayList(dateString);
 
@@ -118,14 +119,14 @@ public class ChatHistoryService {
         return Arrays.asList(startOfDay, endOfDay);
     }
 
-    public ChatHistory deleteChatHistory(Long chatHistoryId){
+    public ChatHistory deleteChatHistory(Long chatHistoryId) {
         Optional<ChatHistory> chatHistoryOptional = chatHistoryRepository.findById(chatHistoryId);
 
-        if(chatHistoryOptional.isEmpty()){
+        if (chatHistoryOptional.isEmpty()) {
             throw new ControlledException(ChatHistoryErrorCode.ERROR_CHATHISTORY_NOT_EXISTS);
         }
 
-        ChatHistory foundChatHistory =  chatHistoryOptional.get();
+        ChatHistory foundChatHistory = chatHistoryOptional.get();
 
         foundChatHistory.setIsDeleted(true);
 
@@ -261,9 +262,9 @@ public class ChatHistoryService {
         }
     }
 
-    // Date → yyyy-MM-dd 문자열로 포맷
-    private String formatDate(Date date) {
-        return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
+    // Date → yyyy-MM-dd LDT로 포맷
+    private LocalDateTime formatDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     // 두 날짜가 같은 날인지 비교
