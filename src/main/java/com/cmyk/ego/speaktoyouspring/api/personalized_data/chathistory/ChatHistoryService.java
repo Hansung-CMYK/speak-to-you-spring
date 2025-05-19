@@ -171,8 +171,10 @@ public class ChatHistoryService {
         List<List<Map<String, Object>>> result = new ArrayList<>();
 
         // 1. Firestore에서 해당 유저의 채팅 내역 조회 (특정 날짜 기준)
-        List<Map<String, Object>> userChatList = getFirestoreChatHistory(userid, datetime);
-        result.add(userChatList);
+        List<List<Map<String, Object>>> userChatList = getFirestoreChatHistory(userid, datetime);
+        if (!userChatList.isEmpty()) {
+            result.addAll(userChatList);
+        }
 
         // 2. 날짜 범위 추출 (예: 하루의 시작~끝, 또는 다중 일자)
         List<LocalDateTime> dayList = convertStringToDayList(datetime);
@@ -211,8 +213,8 @@ public class ChatHistoryService {
         return result;
     }
 
-    private List<Map<String, Object>> getFirestoreChatHistory(String userid, String datetime) {
-        List<Map<String, Object>> result = new ArrayList<>();
+    private List<List<Map<String, Object>>> getFirestoreChatHistory(String userid, String datetime) {
+        List<List<Map<String, Object>>> result = new ArrayList<>();
         Date targetDate = parseDate(datetime);
         Firestore db = FirestoreClient.getFirestore();
 
@@ -222,6 +224,8 @@ public class ChatHistoryService {
                 .listCollections()) {
             // 사용자의 ID를 포함하지 않는 컬렉션은 무시
             if (!chatCollection.getId().contains(userid)) continue;
+
+            List<Map<String, Object>> collectionChatList = new ArrayList<>();
 
             try {
                 // 채팅 메시지를 timestamp 기준 오름차순 정렬
@@ -236,14 +240,14 @@ public class ChatHistoryService {
                     if (timestamp == null || !isSameDay(timestamp.toDate(), targetDate)) continue;
 
                     // 필요한 필드만 추출하여 Map 형태로 저장
-                    result.add(Map.of(
+                    collectionChatList.add(Map.of(
                             "uid", Objects.requireNonNull(doc.getString("sender_id")),
                             "type", doc.getString("sender_id").equals(userid) ? "U" : "O",
                             "content", Objects.requireNonNull(doc.getString("text")),
                             "chat_at", formatDate(timestamp.toDate())
                     ));
                 }
-
+                result.add(collectionChatList);
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
