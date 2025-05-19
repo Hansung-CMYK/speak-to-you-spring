@@ -24,6 +24,7 @@ public class DiaryService {
 
         if (diary != null) {
             diary.setFeeling(diaryDTO.getFeeling());
+            diary.setDailyComment(diaryDTO.getDailyComment());
             return diaryRepository.save(diary);
         }
 
