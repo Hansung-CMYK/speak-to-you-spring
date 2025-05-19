@@ -3,6 +3,7 @@ package com.cmyk.ego.speaktoyouspring.api.personalized_data.chathistory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public interface ChatHistoryRepository extends JpaRepository<ChatHistory, Long> 
     List<ChatHistory> findByChatRoomIdAndIsDeletedFalseAndChatAtBetween(Long chatRoomId, LocalDateTime start, LocalDateTime end);
 
     // 날짜, 삭제 여부를 기준으로 조회하는 메서드
+    @Query("SELECT c FROM ChatHistory c WHERE c.chatAt BETWEEN :start AND :end AND c.isDeleted = false ORDER BY c.chatRoomId, c.chatAt")
     List<ChatHistory> findByChatAtBetweenAndIsDeletedFalse(LocalDateTime start, LocalDateTime end);
 
     // 삭제 처리되지 않은 hash 값을 가진 튜플 가져오기
