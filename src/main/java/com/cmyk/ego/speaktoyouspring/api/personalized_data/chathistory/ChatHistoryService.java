@@ -5,6 +5,12 @@ import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoomRepo
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.ChatHistoryErrorCode;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.ChatRoomErrorCode;
+import com.google.cloud.Timestamp;
+import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.firebase.cloud.FirestoreClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,12 +21,13 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -83,6 +90,17 @@ public class ChatHistoryService {
      * 하루치 채팅 내역 조회
      * */
     public List<ChatHistory> getDailyChatHistories(Long chatRoomId, String dateString) {
+        List<LocalDateTime> dayList = convertStringToDayList(dateString);
+
+        List<ChatHistory> chatHistories = chatHistoryRepository.findByChatRoomIdAndIsDeletedFalseAndChatAtBetween(chatRoomId, dayList.getFirst(), dayList.getLast());
+
+        // 정렬 (오래된 순으로 정렬)
+        chatHistories.sort(Comparator.comparing(ChatHistory::getChatAt));
+
+        return chatHistories;
+    }
+
+    private List<LocalDateTime> convertStringToDayList(String dateString) {
         // 날짜 포맷 검증
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date;
@@ -97,14 +115,8 @@ public class ChatHistoryService {
         LocalDateTime startOfDay = date.atStartOfDay();// 00:00:00
         LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();// 다음날 00:00:00
 
-        List<ChatHistory> chatHistories = chatHistoryRepository.findByChatRoomIdAndIsDeletedFalseAndChatAtBetween(chatRoomId, startOfDay, endOfDay);
-
-        // 정렬 (오래된 순으로 정렬)
-        chatHistories.sort(Comparator.comparing(ChatHistory::getChatAt));
-
-        return chatHistories;
+        return Arrays.asList(startOfDay, endOfDay);
     }
-
 
     public ChatHistory deleteChatHistory(Long chatHistoryId){
         Optional<ChatHistory> chatHistoryOptional = chatHistoryRepository.findById(chatHistoryId);
@@ -151,5 +163,116 @@ public class ChatHistoryService {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    // 사용자의 채팅 내역을 조회하여 날짜별로 그룹화된 결과를 반환
+    public List<List<Map<String, Object>>> getChatHistoryByUidAndDate(String userid, String datetime) {
+        List<List<Map<String, Object>>> result = new ArrayList<>();
+
+        // 1. Firestore에서 해당 유저의 채팅 내역 조회 (특정 날짜 기준)
+        List<Map<String, Object>> userChatList = getFirestoreChatHistory(userid, datetime);
+        result.add(userChatList);
+
+        // 2. 날짜 범위 추출 (예: 하루의 시작~끝, 또는 다중 일자)
+        List<LocalDateTime> dayList = convertStringToDayList(datetime);
+
+        // 3. RDB에서 삭제되지 않은 전체 채팅 내역 조회 (날짜 범위 내)
+        List<ChatHistory> allChats = chatHistoryRepository.findByChatAtBetweenAndIsDeletedFalse(
+                dayList.getFirst(), dayList.getLast()
+        );
+
+        // 4. 채팅방 ID → 시간순으로 정렬
+        allChats.sort(
+                Comparator.comparing(ChatHistory::getChatRoomId)
+                        .thenComparing(ChatHistory::getChatAt)
+        );
+
+        // 5. 채팅방별로 그룹화
+        Map<Long, List<ChatHistory>> groupedByRoom = allChats.stream()
+                .collect(Collectors.groupingBy(ChatHistory::getChatRoomId));
+
+        // 6. 각 채팅방별로 사용자 채팅 내역을 리스트에 추가
+        for (List<ChatHistory> chatList : groupedByRoom.values()) {
+            List<Map<String, Object>> chatGroup = new ArrayList<>();
+
+            for (ChatHistory chat : chatList) {
+                chatGroup.add(Map.of(
+                        "uid", chat.getUid(),
+                        "type", chat.getType(),
+                        "content", chat.getContent(),
+                        "chat_at", formatDate(java.sql.Timestamp.valueOf(chat.getChatAt()))
+                ));
+            }
+
+            result.add(chatGroup);
+        }
+
+        return result;
+    }
+
+    private List<Map<String, Object>> getFirestoreChatHistory(String userid, String datetime) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        Date targetDate = parseDate(datetime);
+        Firestore db = FirestoreClient.getFirestore();
+
+        // chats/user_chat 하위의 모든 컬렉션(=채팅방) 탐색
+        for (CollectionReference chatCollection : db.collection("chats")
+                .document("user_chat")
+                .listCollections()) {
+            // 사용자의 ID를 포함하지 않는 컬렉션은 무시
+            if (!chatCollection.getId().contains(userid)) continue;
+
+            try {
+                // 채팅 메시지를 timestamp 기준 오름차순 정렬
+                List<QueryDocumentSnapshot> documents = chatCollection
+                        .orderBy("timestamp", Query.Direction.ASCENDING)
+                        .get().get().getDocuments();
+
+                for (QueryDocumentSnapshot doc : documents) {
+                    Timestamp timestamp = doc.getTimestamp("timestamp");
+
+                    // 유효하지 않거나 날짜가 다르면 건너뜀
+                    if (timestamp == null || !isSameDay(timestamp.toDate(), targetDate)) continue;
+
+                    // 필요한 필드만 추출하여 Map 형태로 저장
+                    result.add(Map.of(
+                            "uid", Objects.requireNonNull(doc.getString("sender_id")),
+                            "type", doc.getString("sender_id").equals(userid) ? "U" : "O",
+                            "content", Objects.requireNonNull(doc.getString("text")),
+                            "chat_at", formatDate(timestamp.toDate())
+                    ));
+                }
+
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
+
+        return result;
+    }
+
+    // yyyy-MM-dd 형식 문자열을 Date 객체로 변환
+    private Date parseDate(String dateStr) {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateStr);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    // Date → yyyy-MM-dd 문자열로 포맷
+    private String formatDate(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
+    }
+
+    // 두 날짜가 같은 날인지 비교
+    private boolean isSameDay(Date d1, Date d2) {
+        Calendar c1 = Calendar.getInstance();
+        Calendar c2 = Calendar.getInstance();
+        c1.setTime(d1);
+        c2.setTime(d2);
+        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR) &&
+                c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR);
     }
 }

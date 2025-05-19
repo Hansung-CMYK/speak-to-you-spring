@@ -5,12 +5,15 @@ import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.UserAccountErrorCode;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @RestController
@@ -22,7 +25,7 @@ public class ChatHistoryController {
 
     /**
      * 채팅 내역 생성
-     * */
+     */
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid ChatHistoryDTO chatHistoryDTO, BindingResult bindingResult) {
 
@@ -57,7 +60,7 @@ public class ChatHistoryController {
             @RequestParam(defaultValue = "0") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize) {
 
-        if (pageNum<0 || pageSize<1) {
+        if (pageNum < 0 || pageSize < 1) {
             return ResponseEntity.badRequest()
                     .body(CommonResponse.builder()
                             .code(400)
@@ -87,7 +90,7 @@ public class ChatHistoryController {
     public ResponseEntity getUndeletedChatHistories(
             @RequestBody @Valid ChatHistoryRequest chatHistoryRequest,
             @RequestParam("date") String dateString,
-            BindingResult bindingResult){
+            BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
@@ -117,7 +120,7 @@ public class ChatHistoryController {
     /**
      * 채팅내역 삭제
      * 필수값 : uid, id
-     * */
+     */
     @DeleteMapping
     public ResponseEntity delete(@RequestBody ChatHistoryDTO chatHistoryDTO) {
 
@@ -161,6 +164,29 @@ public class ChatHistoryController {
         var result = chatHistoryService.deleteChatHistoryByHash(hash);
 
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("대화 해시값으로 삭제 완료").data(result).build());
+    }
+
+    @Operation(summary = "유저의 채팅내역 조회", description = "uid와 날짜를 입력받아 해당 날짜의 채팅내역을 조회합니다. <br> example: uid: user_id_001 / user_id_002 <br> datetime: 2025-05-19")
+    @GetMapping("/{uid}/{datetime}")
+    public ResponseEntity getChatHistoriesByUid(@PathVariable(value = "uid") String userid, @PathVariable("datetime") String datetime) throws IOException, ExecutionException, InterruptedException {
+
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(userid).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
+        TenantContext.setCurrentTenant(userid);
+
+        if (datetime == null) {
+            return ResponseEntity.badRequest().body("유효하지 않은 일자 형식입니다. yyyy-MM-dd로 입력해주세요.");
+        }
+
+        var result = chatHistoryService.getChatHistoryByUidAndDate(userid, datetime);
+
+        return ResponseEntity.ok(CommonResponse.builder()
+                .code(200)
+                .message(String.format("%s일 에고채팅, 사람채팅 내역 전체 조회", datetime))
+                .data(result)
+                .build());
     }
 
 }
