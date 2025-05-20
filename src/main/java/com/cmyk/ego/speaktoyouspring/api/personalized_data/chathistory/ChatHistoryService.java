@@ -2,6 +2,7 @@ package com.cmyk.ego.speaktoyouspring.api.personalized_data.chathistory;
 
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoom;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoomRepository;
+import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoomService;
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.ChatHistoryErrorCode;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.ChatRoomErrorCode;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ChatHistoryService {
+    private final ChatRoomService chatRoomService;
     private final ChatHistoryRepository chatHistoryRepository;
     private final ChatRoomRepository chatRoomRepository;
 
@@ -175,7 +177,7 @@ public class ChatHistoryService {
         if (!userChatList.isEmpty()) {
             result.addAll(userChatList);
         }
-
+        // System.out.println("userChatList: " + userChatList);
         // 2. 날짜 범위 추출 (예: 하루의 시작~끝, 또는 다중 일자)
         List<LocalDateTime> dayList = convertStringToDayList(datetime);
 
@@ -196,18 +198,21 @@ public class ChatHistoryService {
 
         // 6. 각 채팅방별로 사용자 채팅 내역을 리스트에 추가
         for (List<ChatHistory> chatList : groupedByRoom.values()) {
+            int egoId = chatRoomService.getChatRoom(userid).getEgoId();
             List<Map<String, Object>> chatGroup = new ArrayList<>();
 
             for (ChatHistory chat : chatList) {
+                String uid = Objects.equals(chat.getType(), "U") ? chat.getUid() : String.valueOf(egoId);
                 chatGroup.add(Map.of(
-                        "uid", chat.getUid(),
+                        "uid", uid,
                         "type", chat.getType(),
                         "content", chat.getContent(),
                         "chat_at", formatDate(java.sql.Timestamp.valueOf(chat.getChatAt()))
                 ));
             }
-
-            result.add(chatGroup);
+            if (!chatGroup.isEmpty())
+                result.add(chatGroup);
+            // System.out.println("chatGroup: " + chatGroup);
         }
 
         return result;
@@ -247,7 +252,8 @@ public class ChatHistoryService {
                             "chat_at", formatDate(timestamp.toDate())
                     ));
                 }
-                result.add(collectionChatList);
+                if (!collectionChatList.isEmpty())
+                    result.add(collectionChatList);
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);

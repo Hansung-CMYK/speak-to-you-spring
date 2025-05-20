@@ -19,7 +19,7 @@ public class SecurityConfig {
     private final FirebaseAuthenticationFilter firebaseAuthenticationFilter;
 
     public SecurityConfig(FirebaseAuthenticationFilter firebaseAuthenticationFilter) {
-        this.firebaseAuthenticationFilter = firebaseAuthenticationFilter;
+        this.firebaseAuthenticationFilter = firebaseAuthenticationFilter; //
     }
 
     @Bean
@@ -27,7 +27,7 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())  // CSRF 비활성화
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**")
+                        .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**", "/api/v1/**")
                         .permitAll()
                         .anyRequest().authenticated() // 다른 요청은 Token 검증 로직 필요
                 )

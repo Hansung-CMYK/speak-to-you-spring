@@ -17,4 +17,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     // chatRoomId가 같은 것을 찾아주는 메서드
     Optional<ChatRoom> findByIdAndIsDeletedFalse(Long id);
+
+    Optional<ChatRoom> findByUidAndIsDeletedFalse(String uid);
 }
