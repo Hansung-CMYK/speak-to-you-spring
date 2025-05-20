@@ -3,8 +3,11 @@ package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,4 +22,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     Optional<ChatRoom> findByIdAndIsDeletedFalse(Long id);
 
     Optional<ChatRoom> findByUidAndIsDeletedFalse(String uid);
+
+    @Query("SELECT egoId FROM ChatRoom WHERE uid = :uid")
+    List<Long> findEgoIdByUidList(@Param("uid") String uid);
 }

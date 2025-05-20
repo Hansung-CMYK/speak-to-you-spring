@@ -1,7 +1,12 @@
 package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom;
 
+import com.cmyk.ego.speaktoyouspring.api.hub.ego.Ego;
+import com.cmyk.ego.speaktoyouspring.api.hub.ego.EgoService;
+import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
+import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.ChatRoomErrorCode;
+import com.cmyk.ego.speaktoyouspring.exception.errorcode.UserAccountErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,11 +17,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService {
+    private final EgoService egoService;
     private final ChatRoomRepository chatRoomRepository;
+    private final UserAccountRepository userAccountRepository;
 
     public ChatRoom create(ChatRoomDTO chatRoomDTO){
 
@@ -66,5 +74,24 @@ public class ChatRoomService {
     public ChatRoom getChatRoom(String uid) {
         return chatRoomRepository.findByUidAndIsDeletedFalse(uid)
                 .orElseThrow(() -> new ControlledException(ChatRoomErrorCode.ERROR_CHATROOM_NOT_FOUND));
+    }
+
+    public Long findRandomEgoIdByUid(String uid) {
+        List<Long> egoIdList = egoService.readAll().stream().map(Ego::getId).toList();
+
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(uid).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
+        TenantContext.setCurrentTenant(uid);
+
+        List<Long> usedEgoIds  = chatRoomRepository.findEgoIdByUidList(uid);
+        List<Long> unusedEgoIds = egoIdList.stream()
+                .filter(id -> !usedEgoIds.contains(id))
+                .toList();
+
+        return unusedEgoIds.isEmpty()
+                ? egoIdList.get(new Random().nextInt(egoIdList.size()))
+                : unusedEgoIds.get(new Random().nextInt(unusedEgoIds.size()));
     }
 }

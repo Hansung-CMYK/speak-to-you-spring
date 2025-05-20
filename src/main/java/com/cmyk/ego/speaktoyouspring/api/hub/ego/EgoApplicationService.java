@@ -102,4 +102,12 @@ public class EgoApplicationService {
         // 에고 기본 정보 조회
         return egoService.findById(ua.getEgoId());
     }
+
+    /// 오늘의 에고 조회
+    public Ego getTodayEgo(String uid) {
+        // 오늘의 에고 조회
+        Long egoId = chatRoomService.findRandomEgoIdByUid(uid);
+
+        return egoService.findById(egoId);
+    }
 }

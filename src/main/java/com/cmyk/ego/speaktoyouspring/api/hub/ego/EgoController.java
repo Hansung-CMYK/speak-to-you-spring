@@ -105,4 +105,14 @@ public class EgoController {
         Ego result = egoApplicationService.getEgoInfoByUid(userId);
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("사용자의 ego 조회 완료").data(result).build());
     }
+
+    /**
+     * 오늘의 에고 불러오기
+     */
+    @Operation(summary = "오늘의 에고 불러오기", description = "오늘의 ego정보를 불러온다.")
+    @GetMapping("/{userId}/daily")
+    public ResponseEntity getTodayEgo(@PathVariable("userId") String userId) {
+        var result = egoApplicationService.getTodayEgo(userId);
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("오늘의 ego 조회 완료").data(result).build());
+    }
 }
