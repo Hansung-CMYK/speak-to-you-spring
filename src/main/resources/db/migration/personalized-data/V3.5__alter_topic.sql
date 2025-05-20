@@ -1,1 +1,0 @@
-ALTER TABLE topic RENAME COLUMN picture TO url;

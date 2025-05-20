@@ -1,1 +1,0 @@
-COMMENT ON COLUMN ego.likes IS '좋아요(하트) 개수';
