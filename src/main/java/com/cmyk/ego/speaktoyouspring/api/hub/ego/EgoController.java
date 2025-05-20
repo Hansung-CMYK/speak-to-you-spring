@@ -97,4 +97,12 @@ public class EgoController {
 
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("연관된 ego 목록 조회 완료").data(result).build());
     }
+
+    /** 사용자 ID로 에고 정보 조회 */
+    @Operation(summary = "사용자 ID로 에고 정보 조회", description = "userId를 기준으로 ego정보를 불러온다. <br> userId : user_id_001")
+    @GetMapping("/user/{userid}")
+    public ResponseEntity getUserEgo(@PathVariable("userid") String userId) {
+        Ego result = egoApplicationService.getEgoInfoByUid(userId);
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("사용자의 ego 조회 완료").data(result).build());
+    }
 }

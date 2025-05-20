@@ -4,6 +4,7 @@ import com.cmyk.ego.speaktoyouspring.api.hub.ego_personality.EgoPersonality;
 import com.cmyk.ego.speaktoyouspring.api.hub.ego_personality.EgoPersonalityService;
 import com.cmyk.ego.speaktoyouspring.api.hub.personality.Personality;
 import com.cmyk.ego.speaktoyouspring.api.hub.personality.PersonalityService;
+import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccount;
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoom;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoomService;
@@ -88,5 +89,17 @@ public class EgoApplicationService {
         EgoDTO convertedEgoDTO = convertEgoDTO(ego);
         convertedEgoDTO.setPersonalityList(egoDTO.getPersonalityList());
         return convertedEgoDTO;
+    }
+
+    /// uid로 ego 정보 조회
+    public Ego getEgoInfoByUid(String uid) {
+        // 전달받은 Uid가 있는지 확인
+        UserAccount ua = userAccountRepository.findByUid(uid).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
+        TenantContext.setCurrentTenant(uid);
+
+        // 에고 기본 정보 조회
+        return egoService.findById(ua.getEgoId());
     }
 }
