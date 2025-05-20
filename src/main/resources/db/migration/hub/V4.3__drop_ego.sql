@@ -1,1 +1,0 @@
-ALTER TABLE ego DROP COLUMN personality;

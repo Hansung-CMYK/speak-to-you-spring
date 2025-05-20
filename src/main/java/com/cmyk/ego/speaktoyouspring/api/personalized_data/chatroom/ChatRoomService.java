@@ -62,4 +62,9 @@ public class ChatRoomService {
     public List<ChatRoom> getChatRooms() {
         return chatRoomRepository.findAll();
     }
+
+    public ChatRoom getChatRoom(String uid) {
+        return chatRoomRepository.findByUidAndIsDeletedFalse(uid)
+                .orElseThrow(() -> new ControlledException(ChatRoomErrorCode.ERROR_CHATROOM_NOT_FOUND));
+    }
 }

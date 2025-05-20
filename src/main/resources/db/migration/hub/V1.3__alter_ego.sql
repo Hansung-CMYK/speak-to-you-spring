@@ -1,1 +1,0 @@
-ALTER TABLE ego ADD COLUMN likes INTEGER; -- 좋아요(하트) 개수
