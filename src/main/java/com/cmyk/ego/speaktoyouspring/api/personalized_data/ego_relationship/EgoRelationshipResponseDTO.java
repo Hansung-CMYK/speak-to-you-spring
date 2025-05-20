@@ -3,6 +3,8 @@ package com.cmyk.ego.speaktoyouspring.api.personalized_data.ego_relationship;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -21,6 +23,9 @@ public class EgoRelationshipResponseDTO {
     @Schema(example = "2")
     private Long relationshipId;
 
+    private LocalDateTime createdAt;
+
     @Schema(example = "매력적")
     private String relationshipContent;
+
 }

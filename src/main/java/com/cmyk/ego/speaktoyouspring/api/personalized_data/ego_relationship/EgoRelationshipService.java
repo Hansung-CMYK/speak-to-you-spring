@@ -34,6 +34,7 @@ public class EgoRelationshipService {
                     egoRelationship.getUid(),
                     egoRelationship.getEgoId(),
                     egoRelationship.getRelationshipId(),
+                    egoRelationship.getCreatedAt(),
                     relationshipService.findByRelationshipId(egoRelationship.getRelationshipId()).getRelationshipContent()
             );
             erList.add(er);
@@ -42,7 +43,7 @@ public class EgoRelationshipService {
         return erList;
     }
 
-    public EgoRelationshipDTO create(EgoRelationshipDTO egoRelationshipDTO){
+    public EgoRelationship create(EgoRelationshipDTO egoRelationshipDTO){
         String uid = egoRelationshipDTO.getUid();
         // 전달받은 Uid가 있는지 확인
         userAccountRepository.findByUid(uid).orElseThrow(
@@ -50,11 +51,6 @@ public class EgoRelationshipService {
 
         TenantContext.setCurrentTenant(uid);
 
-        EgoRelationship egoRelationship = egoRelationshipRepository
-                .findByUidAndEgoId(uid, egoRelationshipDTO.getEgoId())
-                .orElseGet(egoRelationshipDTO::toEntity);
-        egoRelationshipRepository.save(egoRelationship);
-
-        return new EgoRelationshipDTO(egoRelationship.getEgoRelationshipId(), egoRelationship.getUid(), egoRelationship.getEgoId(), egoRelationship.getRelationshipId());
+        return egoRelationshipRepository.save(egoRelationshipDTO.toEntity());
     }
 }

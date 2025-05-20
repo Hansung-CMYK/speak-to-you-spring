@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "ego_relationship")
 @Data
@@ -31,4 +33,8 @@ public class EgoRelationship {
     /// EGO 이름
     @Column(name = "relationship_id", nullable = false)
     private Long relationshipId;
+
+    // 생성날짜
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }
