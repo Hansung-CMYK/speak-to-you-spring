@@ -89,7 +89,7 @@ public class EgoController {
     /**
      * EGO 정보 불러오기
      */
-    @Operation(summary = "ego 정보 불러오기", description = "userId를 기준으로 ego정보를 불러온다.")
+    @Operation(summary = "평가된 ego 정보 불러오기", description = "userId를 기준으로 ego정보를 불러온다. 리스트 조건 에고 테이블 존재/사용자의 에고 채팅방 존재/사용자가 평가한 에고 기록 존재")
     @GetMapping("/{userid}/list")
     public ResponseEntity getUserEgoList(@PathVariable("userid") String userId) {
 
