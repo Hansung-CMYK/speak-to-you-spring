@@ -206,7 +206,7 @@ public class ChatHistoryService {
             for (ChatHistory chat : chatList) {
                 String uid = Objects.equals(chat.getType(), "U") ? chat.getUid() : String.valueOf(egoId);
                 chatGroup.add(Map.of(
-                        "uid", uid,
+                        "id", uid,
                         "type", chat.getType(),
                         "content", chat.getContent(),
                         "chat_at", formatDate(java.sql.Timestamp.valueOf(chat.getChatAt()))
@@ -248,7 +248,7 @@ public class ChatHistoryService {
 
                     // 필요한 필드만 추출하여 Map 형태로 저장
                     collectionChatList.add(Map.of(
-                            "uid", Objects.requireNonNull(doc.getString("sender_id")),
+                            "id", Objects.requireNonNull(doc.getString("sender_id")),
                             "type", doc.getString("sender_id").equals(userid) ? "U" : "O",
                             "content", Objects.requireNonNull(doc.getString("text")),
                             "chat_at", formatDate(timestamp.toDate())
