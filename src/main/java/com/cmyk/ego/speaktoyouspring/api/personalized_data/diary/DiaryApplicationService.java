@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -58,7 +59,7 @@ public class DiaryApplicationService {
         TenantContext.setCurrentTenant(uid);
 
         Diary diary = diaryService.findByDiaryId(diaryId);
-        List<TopicDTO> topicDTOList = topicService.convertTopicListToDTOList(topicService.findByDiaryId(diaryId));
+        List<TopicDTO> topicDTOList = topicService.convertTopicListToDTOList(topicService.findByDiaryId(diaryId)).stream().sorted(Comparator.comparing(TopicDTO::getTopicId)).toList();
         List<String> keyword = diaryKeywordService.findByDiaryId(userId, diaryId).stream().map(DiaryKeyword::getContent).toList();
         return new DiaryDTO(diary.getDiaryId(), diary.getUid(), diary.getEgoId(), diary.getFeeling(), diary.getDailyComment(), diary.getCreatedAt(), keyword, topicDTOList);
     }
