@@ -21,7 +21,7 @@ public class Notification {
     @Column(name = "uid", nullable = false)
     private String uid; // 사용자 고유 ID
 
-    @Column(name = "ego_id", nullable = false)
+    @Column(name = "ego_id")
     private Long egoId;
 
     @Column(name = "title")
@@ -30,8 +30,8 @@ public class Notification {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "content_html")
-    private String contentHtml;
+    @Column(name = "content")
+    private String content;
 
     @Column(name = "is_read")
     private Boolean isRead;

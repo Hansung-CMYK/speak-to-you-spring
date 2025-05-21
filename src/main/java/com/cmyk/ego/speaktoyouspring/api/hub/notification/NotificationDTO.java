@@ -27,14 +27,14 @@ public class NotificationDTO {
     @Schema(example = "2022-05-06 12:00:00")
     private LocalDateTime createdAt;
 
-    @Schema(example = "<html><body><h1>일기 내용입니다.</h1></body></html>")
-    private String contentHtml;
+    @Schema(example = "신나는 일기 작성시간~~~! 무야호!!")
+    private String content;
 
     @Schema(example = "false", hidden = true)
-    private Boolean isRead;
+    private Boolean isRead = false;
 
     @Schema(example = "false", hidden = true)
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     public Notification toEntity() {
         return Notification.builder()
@@ -43,7 +43,7 @@ public class NotificationDTO {
                 .egoId(egoId)
                 .title(title)
                 .createdAt(createdAt)
-                .contentHtml(contentHtml)
+                .content(content)
                 .isRead(isRead)
                 .isDeleted(isDeleted)
                 .build();
