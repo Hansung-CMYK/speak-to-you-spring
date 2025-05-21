@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -109,5 +111,27 @@ public class EgoApplicationService {
         Long egoId = chatRoomService.findRandomEgoIdByUid(uid);
 
         return egoService.findById(egoId);
+    }
+
+    public Map<String, Object> getEgoInfoByUidAndEgoId(String uid, Long egoId) {
+        Map<String, Object> egoInfo = new HashMap<>();
+
+        // 에고 성격 리스트 조회
+        List<EgoPersonality> personalityList = egoPersonalityService.findByEgoId(egoId);
+        List<String> personalityNameList = new ArrayList<>();
+        for (EgoPersonality personality : personalityList) {
+            personalityNameList.add(personalityService.findByPersonalityId(personality.getPersonalityId()).getContent());
+        }
+
+        egoInfo.put("personalityList", personalityNameList);
+
+        // 전달받은 Uid가 있는지 확인
+        UserAccount ua = userAccountRepository.findByUid(uid).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
+        TenantContext.setCurrentTenant(uid);
+
+        egoInfo.put("rating", evaluationService.findOverallScoreByEgoId(egoId));
+        return egoInfo;
     }
 }

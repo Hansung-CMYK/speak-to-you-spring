@@ -115,4 +115,14 @@ public class EgoController {
         var result = egoApplicationService.getTodayEgo(userId);
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("오늘의 ego 조회 완료").data(result).build());
     }
+
+    /**
+     * egoId와 userId로 ego 정보 조회
+     */
+    @Operation(summary = "egoId와 userId로 ego 정보 조회(평가 점수 포함)", description = "egoId와 userId를 기준으로 ego정보를 불러온다. 평가 점수, 성격 라벨링만 리턴한다.")
+    @GetMapping("/{egoId}/{userId}")
+    public ResponseEntity getEgoByEgoIdAndUserId(@PathVariable("egoId") Long egoId, @PathVariable("userId") String userId) {
+        var result = egoApplicationService.getEgoInfoByUidAndEgoId(userId, egoId);
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 점수 및 성격 조회 완료").data(result).build());
+    }
 }
