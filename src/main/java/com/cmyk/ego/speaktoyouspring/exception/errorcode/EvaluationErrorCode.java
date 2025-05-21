@@ -4,4 +4,5 @@ import com.cmyk.ego.speaktoyouspring.exception.ErrorMessage;
 
 public interface EvaluationErrorCode {
     ErrorMessage ERROR_SCORE_OUT_OF_RANGE = new ErrorMessage(400, "평가 점수가 범위를 벗어났습니다.");
+    ErrorMessage ERROR_EVALUATION_NOT_FOUND = new ErrorMessage(404, "해당 Evaluation 정보가 존재하지 않습니다.");
 }

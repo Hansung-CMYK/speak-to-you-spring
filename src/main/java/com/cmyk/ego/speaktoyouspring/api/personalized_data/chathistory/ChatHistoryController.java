@@ -146,6 +146,7 @@ public class ChatHistoryController {
      * 채팅내역 해시값으로 삭제
      * 필수값 : uid, hash
      */
+    @Operation(summary = "해시값으로 에고 채팅 메세지를 삭제하는 API", description = "특정 메세지를 삭제하면 채팅 기록상 이후의 것들도 한꺼번에 삭제된다.")
     @DeleteMapping("/{userid}/{hash}")
     public ResponseEntity deleteByHash(@PathVariable("userid") String userid, @PathVariable("hash") String hash) {
         if (userid == null || hash == null) {

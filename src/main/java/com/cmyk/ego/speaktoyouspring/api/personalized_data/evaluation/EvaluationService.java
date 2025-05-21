@@ -33,4 +33,10 @@ public class EvaluationService {
         return evaluationRepository.findAll();
     }
 
+    public Integer findOverallScoreByEgoId(Long egoId){
+        return evaluationRepository.findByEgoId(egoId).orElseThrow(
+                () -> new ControlledException(EvaluationErrorCode.ERROR_EVALUATION_NOT_FOUND)
+        ).getOverallScore();
+    }
+
 }

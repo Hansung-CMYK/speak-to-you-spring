@@ -89,7 +89,7 @@ public class EgoController {
     /**
      * EGO 정보 불러오기
      */
-    @Operation(summary = "ego 정보 불러오기", description = "userId를 기준으로 ego정보를 불러온다.")
+    @Operation(summary = "평가된 ego 정보 불러오기", description = "userId를 기준으로 ego정보를 불러온다. 리스트 조건 에고 테이블 존재/사용자의 에고 채팅방 존재/사용자가 평가한 에고 기록 존재")
     @GetMapping("/{userid}/list")
     public ResponseEntity getUserEgoList(@PathVariable("userid") String userId) {
 
@@ -104,5 +104,25 @@ public class EgoController {
     public ResponseEntity getUserEgo(@PathVariable("userid") String userId) {
         Ego result = egoApplicationService.getEgoInfoByUid(userId);
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("사용자의 ego 조회 완료").data(result).build());
+    }
+
+    /**
+     * 오늘의 에고 불러오기
+     */
+    @Operation(summary = "오늘의 에고 불러오기", description = "오늘의 ego정보를 불러온다.")
+    @GetMapping("/{userId}/daily")
+    public ResponseEntity getTodayEgo(@PathVariable("userId") String userId) {
+        var result = egoApplicationService.getTodayEgo(userId);
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("오늘의 ego 조회 완료").data(result).build());
+    }
+
+    /**
+     * egoId와 userId로 ego 정보 조회
+     */
+    @Operation(summary = "egoId와 userId로 ego 정보 조회(평가 점수 포함)", description = "egoId와 userId를 기준으로 ego정보를 불러온다. 평가 점수, 성격 라벨링만 리턴한다.")
+    @GetMapping("/{egoId}/{userId}")
+    public ResponseEntity getEgoByEgoIdAndUserId(@PathVariable("egoId") Long egoId, @PathVariable("userId") String userId) {
+        var result = egoApplicationService.getEgoInfoByUidAndEgoId(userId, egoId);
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("ego 점수 및 성격 조회 완료").data(result).build());
     }
 }

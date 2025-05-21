@@ -141,6 +141,8 @@ public class ChatHistoryService {
         ChatHistory foundChatHistory = chatHistoryRepository.findByMessageHashAndIsDeletedFalse(hash)
                 .orElseThrow(() -> new ControlledException(ChatHistoryErrorCode.ERROR_CHATHISTORY_NOT_EXISTS));
 
+        chatHistoryRepository.updateMessagesByHashToDeleted(hash);
+
         foundChatHistory.setIsDeleted(true);
         return chatHistoryRepository.save(foundChatHistory);
     }

@@ -3,8 +3,10 @@ package com.cmyk.ego.speaktoyouspring.api.personalized_data.chathistory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,4 +27,17 @@ public interface ChatHistoryRepository extends JpaRepository<ChatHistory, Long> 
 
     // 삭제 처리되지 않은 hash 값을 가진 튜플 가져오기
     Optional<ChatHistory> findByMessageHashAndIsDeletedFalse(String messageHash);
+
+    //
+    @Modifying
+    @Transactional
+    @Query("UPDATE ChatHistory ccc set ccc.isDeleted = true where ccc.id IN" +
+            "(" +
+            "SELECT cc.id " +
+            "FROM ChatHistory cc " +
+            "WHERE cc.chatRoomId = (SELECT DISTINCT c.chatRoomId FROM ChatHistory c WHERE c.messageHash = :messageHash AND c.isDeleted = false) " +
+            "AND cc.chatAt > (SELECT DISTINCT c.chatAt FROM ChatHistory c WHERE c.messageHash = :messageHash AND c.isDeleted = false)" +
+            "ORDER BY cc.chatAt ASC" +
+            ")")
+    void updateMessagesByHashToDeleted(String messageHash);
 }
