@@ -93,7 +93,7 @@ public class EgoController {
     @GetMapping("/{userid}/list")
     public ResponseEntity getUserEgoList(@PathVariable("userid") String userId) {
 
-        List<Ego> result = egoApplicationService.getUserEgoList(userId);
+        List<EgoDTO> result = egoApplicationService.getUserEgoList(userId);
 
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("연관된 ego 목록 조회 완료").data(result).build());
     }
