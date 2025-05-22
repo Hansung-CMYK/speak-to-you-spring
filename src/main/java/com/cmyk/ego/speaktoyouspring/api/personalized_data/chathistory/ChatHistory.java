@@ -37,4 +37,7 @@ public class ChatHistory {
 
   @Column(name = "message_hash")
   private String messageHash;
+
+  @Column(name = "content_type")
+  private String contentType;
 }

@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS chat_history (
     type VARCHAR(1) NOT NULL,                                -- 대화 유형 (U - User, E - Ego)
     chat_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,             -- 대화가 발생한 시간 (현재 시간)
     is_deleted BOOLEAN DEFAULT FALSE,                         -- 삭제 여부 (TRUE : 삭제, FALSE : 정상)
-    message_hash VARCHAR(64)
+    message_hash VARCHAR(64),
+    content_type VARCHAR(255) DEFAULT 'text'
 );
 
 
