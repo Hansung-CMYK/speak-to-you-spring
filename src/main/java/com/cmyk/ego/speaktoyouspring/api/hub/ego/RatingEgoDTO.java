@@ -52,7 +52,6 @@ public class RatingEgoDTO {
                 .mbti(mbti)
                 .createdAt(createdAt)
                 .likes(likes)
-                .rating(rating)
                 .build();
     }
 }

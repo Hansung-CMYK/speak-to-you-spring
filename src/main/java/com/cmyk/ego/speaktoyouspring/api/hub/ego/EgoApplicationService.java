@@ -31,7 +31,7 @@ public class EgoApplicationService {
     private final PersonalityService personalityService;
     private final UserAccountRepository userAccountRepository;
 
-    public List<Ego> getUserEgoList(String userId) {
+    public List<EgoDTO> getUserEgoList(String userId) {
         List<Ego> egoList = egoService.readAll();
 
         // 전달받은 Uid가 있는지 확인
@@ -72,13 +72,9 @@ public class EgoApplicationService {
         }
 
         // 에고 성격 리스트 에고 정보에 추가
-        EgoDTO egoDTO = convertEgoDTO(ego);
+        EgoDTO egoDTO = egoService.convertEgoDTO(ego);
         egoDTO.setPersonalityList(personalityNameList);
         return egoDTO;
-    }
-
-    public EgoDTO convertEgoDTO(Ego ego) {
-        return new EgoDTO(ego.getId(), ego.getName(), ego.getIntroduction(), ego.getProfileImage(), ego.getMbti(), ego.getCreatedAt(), ego.getLikes(), new ArrayList<>());
     }
 
     /// ego_id로 ego 정보 및 personality 정보 갱신
@@ -88,7 +84,7 @@ public class EgoApplicationService {
         savePersonality(ego.getId(), egoDTO.getPersonalityList());
 
         // 에고 성격 리스트 에고 정보에 추가
-        EgoDTO convertedEgoDTO = convertEgoDTO(ego);
+        EgoDTO convertedEgoDTO = egoService.convertEgoDTO(ego);
         convertedEgoDTO.setPersonalityList(egoDTO.getPersonalityList());
         return convertedEgoDTO;
     }
