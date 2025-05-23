@@ -68,6 +68,18 @@ public class EgoController {
     }
 
     /**
+     * egoid와 일치하는 ego조회
+     * */
+    @Operation(summary = "egoId로 소유자 사용자 id 조회", description = "egoId로 사용자 Id를 조회한다.")
+    @GetMapping("/{egoid}/owner")
+    public ResponseEntity getOwner(@PathVariable("egoid") Long egoId) {
+
+        var result = egoApplicationService.getUidByEgoId(egoId);
+
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("egoId로 uid 조회 완료").data(result).build());
+    }
+
+    /**
      * ego정보 수정
      * */
     @Operation(summary = "ego 정보 수정", description = "egoId를 기준으로 ego정보를 수정한다.")

@@ -6,8 +6,10 @@ import com.cmyk.ego.speaktoyouspring.api.hub.personality.Personality;
 import com.cmyk.ego.speaktoyouspring.api.hub.personality.PersonalityService;
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccount;
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
+import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountService;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoom;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoomService;
+import com.cmyk.ego.speaktoyouspring.api.personalized_data.egolike.EgoLikeService;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.evaluation.Evaluation;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.evaluation.EvaluationService;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
@@ -25,8 +27,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class EgoApplicationService {
     private final EgoService egoService;
+    private final EgoLikeService egoLikeService;
     private final ChatRoomService chatRoomService;
     private final EvaluationService evaluationService;
+    private final UserAccountService userAccountService;
     private final EgoPersonalityService egoPersonalityService;
     private final PersonalityService personalityService;
     private final UserAccountRepository userAccountRepository;
@@ -128,6 +132,14 @@ public class EgoApplicationService {
         TenantContext.setCurrentTenant(uid);
 
         egoInfo.put("rating", evaluationService.findOverallScoreByEgoId(egoId));
+        egoInfo.put("isLiked", egoLikeService.isLiked(uid, egoId));
         return egoInfo;
+    }
+
+    public Map<String, Object> getUidByEgoId(Long egoId) {
+        String uid = userAccountService.getUidByEgoId(egoId);
+        Map<String, Object> uidMap = new HashMap<>();
+        uidMap.put("uid", uid);
+        return uidMap;
     }
 }

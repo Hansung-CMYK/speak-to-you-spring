@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -74,5 +73,11 @@ public class UserAccountService {
         userAccount.setIsDeleted(true);
 
         return userAccount;
+    }
+
+    public String getUidByEgoId(Long egoId) {
+        return userAccountRepository.findByEgoId(egoId).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_EGO_NOT_FOUND)
+        ).getUid();
     }
 }
