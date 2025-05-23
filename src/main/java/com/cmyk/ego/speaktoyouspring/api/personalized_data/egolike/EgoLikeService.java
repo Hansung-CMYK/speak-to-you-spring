@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -34,5 +32,9 @@ public class EgoLikeService {
     public int calculateLikeDelta(boolean oldIsLike, boolean newIsLike) {
         if (oldIsLike == newIsLike) return 0;
         return newIsLike ? 1 : -1; // 좋아요가 설정되었으면 1, 좋아요가 해제되었으면 -1
+    }
+
+    public Boolean isLiked(String uid, Long egoId) {
+        return egoLikeRepository.findByEgoIdAndUid(egoId, uid).orElse(new EgoLike(null, uid, egoId, false)).getIsLike();
     }
 }
