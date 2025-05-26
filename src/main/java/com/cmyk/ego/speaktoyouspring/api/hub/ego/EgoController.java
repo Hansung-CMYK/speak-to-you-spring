@@ -131,7 +131,7 @@ public class EgoController {
     /**
      * egoId와 userId로 ego 정보 조회
      */
-    @Operation(summary = "egoId와 userId로 ego 정보 조회(평가 점수 포함)", description = "egoId와 userId를 기준으로 ego정보를 불러온다. 평가 점수, 성격 라벨링만 리턴한다.")
+    @Operation(summary = "egoId와 userId로 ego 정보 조회(평가 점수 포함)", description = "egoId와 userId를 기준으로 ego정보를 불러온다. 평가 점수, 성격 라벨링, 사용자와 에고와의 관게를 리턴한다.")
     @GetMapping("/{egoId}/{userId}")
     public ResponseEntity getEgoByEgoIdAndUserId(@PathVariable("egoId") Long egoId, @PathVariable("userId") String userId) {
         var result = egoApplicationService.getEgoInfoByUidAndEgoId(userId, egoId);

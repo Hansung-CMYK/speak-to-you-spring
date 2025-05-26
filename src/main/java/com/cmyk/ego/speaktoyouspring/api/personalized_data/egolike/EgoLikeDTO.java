@@ -16,12 +16,15 @@ public class EgoLikeDTO {
     @Schema(hidden = true)
     private Long id;
 
+    @Schema(example = "user_id_001")
     @NotNull(message = "uid는 필수값입니다.")
     private String uid;
 
+    @Schema(example = "1")
     @NotNull(message = "egoId는 필수값입니다.")
     private Long egoId;
 
+    @Schema(example = "false")
     private Boolean isLike;
 
     public EgoLike toEntity() {

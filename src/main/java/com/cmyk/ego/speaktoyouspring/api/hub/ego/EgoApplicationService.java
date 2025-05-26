@@ -9,6 +9,7 @@ import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountService;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoom;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom.ChatRoomService;
+import com.cmyk.ego.speaktoyouspring.api.personalized_data.ego_relationship.EgoRelationshipService;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.egolike.EgoLikeService;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.evaluation.Evaluation;
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.evaluation.EvaluationService;
@@ -30,6 +31,7 @@ public class EgoApplicationService {
     private final EgoLikeService egoLikeService;
     private final ChatRoomService chatRoomService;
     private final EvaluationService evaluationService;
+    private final EgoRelationshipService egoRelationshipService;
     private final UserAccountService userAccountService;
     private final EgoPersonalityService egoPersonalityService;
     private final PersonalityService personalityService;
@@ -133,6 +135,7 @@ public class EgoApplicationService {
 
         egoInfo.put("rating", evaluationService.findOverallScoreByEgoId(egoId));
         egoInfo.put("isLiked", egoLikeService.isLiked(uid, egoId));
+        egoInfo.put("relation", egoRelationshipService.findEgoRelationshipIdByEgoIdAndUid(uid, egoId));
         return egoInfo;
     }
 

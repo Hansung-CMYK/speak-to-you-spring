@@ -1,7 +1,5 @@
 package com.cmyk.ego.speaktoyouspring.api.hub.relationship;
 
-import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
-import com.cmyk.ego.speaktoyouspring.exception.errorcode.RelationshipErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +19,7 @@ public class RelationshipService {
 
     /// 조회
     public Relationship findByRelationshipId(Long relationshipId) {
-        return relationshipRepository.findByRelationshipId(relationshipId).orElse(new Relationship(relationshipId, "지루한"));
+        return relationshipRepository.findByRelationshipId(relationshipId).orElse(new Relationship(relationshipId, "관계 없음"));
     }
 
 }
