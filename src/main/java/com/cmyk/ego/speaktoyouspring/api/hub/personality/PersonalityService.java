@@ -31,6 +31,7 @@ public class PersonalityService {
 
     /// 성격 추가
     public Personality add(String content) {
+        // TODO : 현재는 없으면, 추가하는 로직이지만, 실제로는 없으면, 에러가 출력되어야 한다.
         return personalityRepository
                 .findByContent(content)
                 .orElseGet(() -> personalityRepository.save(new Personality(null, content, null)));
