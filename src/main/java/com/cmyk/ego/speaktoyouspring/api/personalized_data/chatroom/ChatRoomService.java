@@ -27,6 +27,7 @@ public class ChatRoomService {
     private final UserAccountRepository userAccountRepository;
 
     public ChatRoom create(ChatRoomDTO chatRoomDTO){
+        egoService.findById(Long.valueOf(chatRoomDTO.getEgoId()));
 
         if (chatRoomDTO.getLastChatAt() == null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -38,7 +39,12 @@ public class ChatRoomService {
             chatRoomDTO.setIsDeleted(false);
         }
 
-        return chatRoomRepository.save(chatRoomDTO.toEntity());
+        ChatRoom cr = chatRoomRepository.findByUidAndEgoIdAndIsDeletedFalse(chatRoomDTO.getUid(), chatRoomDTO.getEgoId())
+                .orElseGet(chatRoomDTO::toEntity);
+
+        cr.setLastChatAt(chatRoomDTO.getLastChatAt());
+
+        return chatRoomRepository.save(cr);
     }
 
     public ChatRoom delete(ChatRoomDTO targetChatRoom){

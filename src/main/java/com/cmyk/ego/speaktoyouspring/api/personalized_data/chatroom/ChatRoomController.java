@@ -1,10 +1,12 @@
 package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom;
 
+import com.cmyk.ego.speaktoyouspring.api.hub.ego.EgoService;
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
 import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.UserAccountErrorCode;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +20,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
+    private final EgoService egoService;
     private final UserAccountRepository userAccountRepository;
 
     /**
      * 채팅방 생성
      * 필수값 : uid, egoid
      */
+    @Operation(summary = "채팅방 생성", description = "uid와 egoid를 입력받아 해당 채팅방을 생성합니다.<br>단, 기존에 uid-egoId로 생성된 채팅방이 있는 경우, lastChatAt이 업데이트 됩니다.<br>lastChatAt을 전달하지 않으면, 현재 시각으로 전달됩니다. <br> lastChatAt(필수 아님)")
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid ChatRoomDTO chatRoomDTO, BindingResult bindingResult) {
 
