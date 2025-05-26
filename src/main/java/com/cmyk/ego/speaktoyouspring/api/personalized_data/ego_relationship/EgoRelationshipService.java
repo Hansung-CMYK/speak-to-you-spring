@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class EgoRelationshipService {
         return erList;
     }
 
+    @Transactional
     public EgoRelationship create(EgoRelationshipDTO egoRelationshipDTO){
         String uid = egoRelationshipDTO.getUid();
         // 전달받은 Uid가 있는지 확인
@@ -50,8 +52,16 @@ public class EgoRelationshipService {
                 () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
 
         TenantContext.setCurrentTenant(uid);
+        egoRelationshipDTO.setCreatedAt(LocalDateTime.now());
 
-        return egoRelationshipRepository.save(egoRelationshipDTO.toEntity());
+        // upsert
+        EgoRelationship er = egoRelationshipRepository.findByUidAndEgoId(uid, egoRelationshipDTO.getEgoId()).orElseGet(
+                egoRelationshipDTO::toEntity
+        );
+
+        er.setRelationshipId(egoRelationshipDTO.getRelationshipId());
+
+        return egoRelationshipRepository.save(er);
     }
 
     public String findEgoRelationshipIdByEgoIdAndUid(String uid, Long egoId){
