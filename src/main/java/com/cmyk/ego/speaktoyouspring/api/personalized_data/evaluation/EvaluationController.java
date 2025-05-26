@@ -5,6 +5,7 @@ import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.UserAccountErrorCode;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class EvaluationController {
     /**
      * 평가 결과 생성
      * */
+    @Operation(summary = "사용자가 작성한 평가 결과 저장/수정", description = "사용자가 작성한 평가 결과를 저장합니다.<br>만약, 평가 결과가 존재한다면, 에고id와 uid로 검색해 점수를 수정합니다.", tags = {"평가"})
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid EvaluationDTO evaluationDTO, BindingResult bindingResult) {
 
@@ -52,6 +54,7 @@ public class EvaluationController {
      * 평가 결과 전체 조회
      * 필수값 : uid
      * */
+    @Operation(summary = "uid로 작성한 평가 결과 전체 조회 API", description = "uid를 입력받아 해당 uid의 모든 평가 결과를 조회합니다.", tags = {"평가"})
     @PostMapping("/list")
     public ResponseEntity readAll(@RequestBody @Valid EvaluationReadRequest evaluationReadRequest, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
