@@ -100,4 +100,9 @@ public class ChatRoomService {
                 ? egoIdList.get(new Random().nextInt(egoIdList.size()))
                 : unusedEgoIds.get(new Random().nextInt(unusedEgoIds.size()));
     }
+
+    public ChatRoom findByChatRoomId(Long chatRoomId) {
+        return chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new ControlledException(ChatRoomErrorCode.ERROR_CHATROOM_NOT_FOUND));
+    }
 }
