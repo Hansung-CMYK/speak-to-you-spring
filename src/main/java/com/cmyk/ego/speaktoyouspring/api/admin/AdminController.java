@@ -59,7 +59,7 @@ public class AdminController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("DB 백업 완료 (윈도우)").data(result).build());
     }
 
-    @Operation(summary = "[관리자]: 윈도우용 DB 복구하는 API", description = "2개의 DB 복구를 수행한다. <br>백업 API를 호출한 시점으로 DB 상태를 되돌린다. <h2>해당 API는 백업을 1번 반드시 하고 호출해야 한다.</h2> (리눅스를 실행하려면, postgresql를 설치해야 한다.)", tags = {"관리자"})
+    @Operation(summary = "[관리자]: 리눅스용 DB 복구하는 API", description = "2개의 DB 복구를 수행한다. <br>백업 API를 호출한 시점으로 DB 상태를 되돌린다. <h2>해당 API는 백업을 1번 반드시 하고 호출해야 한다.</h2> (리눅스를 실행하려면, postgresql를 설치해야 한다.)", tags = {"관리자"})
     @PostMapping("/restore")
     public ResponseEntity restoreLinux() {
         var result = handle("restore", db.getLinuxBackupDir());
