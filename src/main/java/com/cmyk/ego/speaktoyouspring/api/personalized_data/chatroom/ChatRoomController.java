@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -109,5 +111,18 @@ public class ChatRoomController {
                 .message(String.format("채팅방 조회 pagenum_%d, pagesize_%d", pageNum, pageSize))
                 .data(result.getContent())
                 .build());
+    }
+
+    /**
+     * 채팅방 단일 조회
+     */
+    @Operation(summary = "사용자 ID, 에고 ID로 채팅방 ID 조회하는 API", description = "사용자 ID와 에고 ID로 채팅방 ID를 조회한다.", tags = {"채팅방"})
+    @GetMapping("{userId}/{egoId}")
+    public ResponseEntity getChatRoom(@PathVariable("userId") String userId, @PathVariable("egoId") Integer egoId) {
+        Map<String, Long> result = new HashMap<>();
+        result.put("chatRoomId", chatRoomService.getChatRoomId(userId, egoId));
+
+
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("채팅방 ID 조회 완료").data(result).build());
     }
 }
