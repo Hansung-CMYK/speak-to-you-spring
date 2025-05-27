@@ -69,14 +69,8 @@ public class EgoRelationshipService {
     }
 
     public String findEgoRelationshipIdByEgoIdAndUid(String uid, Long egoId){
-        // 전달받은 Uid가 있는지 확인
-        userAccountRepository.findByUid(uid).orElseThrow(
-                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
-
-        TenantContext.setCurrentTenant(uid);
-
         EgoRelationship egoRelationship = egoRelationshipRepository.findByUidAndEgoId(uid, egoId).orElseThrow(
-                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+                () -> new ControlledException(EgoRelationshipErrorCode .ERROR_EGO_RELATIONSHIP_NOT_FOUND));
 
         return relationshipService.findByRelationshipId(egoRelationship.getRelationshipId()).getRelationshipContent();
     }
