@@ -30,7 +30,11 @@ public class EgoRelationshipService {
         TenantContext.setCurrentTenant(userId);
 
         List<EgoRelationshipResponseDTO> erList = new ArrayList<>();
-        for(EgoRelationship egoRelationship : egoRelationshipRepository.findByUid(userId)){
+        List<EgoRelationship> egoRelationshipList = egoRelationshipRepository.findByUid(userId);
+        if(egoRelationshipList.isEmpty()){
+            throw new ControlledException(EgoRelationshipErrorCode.ERROR_EGO_RELATIONSHIP_NOT_FOUND);
+        }
+        for(EgoRelationship egoRelationship : egoRelationshipList){
             EgoRelationshipResponseDTO er = new EgoRelationshipResponseDTO(
                     egoRelationship.getEgoRelationshipId(),
                     egoRelationship.getUid(),
