@@ -23,7 +23,7 @@ public class AdminController {
     /**
      * 관리자 기능: FCM 직접 발송
      */
-    @Operation(summary = "[관리자]: FCM 직접 발송", description = "보낸 즉시 해당 사용자에게 메세지를 보낼 수 있다. (현재 보내는 데이터는 의미 없는 값(발송한 사용자의 id와 보낸 시각)")
+    @Operation(summary = "[관리자]: FCM 직접 발송", description = "보낸 즉시 해당 사용자에게 메세지를 보낼 수 있다. (현재 보내는 데이터는 의미 없는 값(발송한 사용자의 id와 보낸 시각)", tags = {"관리자"})
     @GetMapping("/fcm/{userId}")
     public ResponseEntity create(@PathVariable String userId) throws FirebaseMessagingException {
 
