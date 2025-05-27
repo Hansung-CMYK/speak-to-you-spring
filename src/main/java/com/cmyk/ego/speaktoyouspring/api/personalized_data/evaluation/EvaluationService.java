@@ -26,7 +26,14 @@ public class EvaluationService {
             throw new ControlledException(EvaluationErrorCode.ERROR_SCORE_OUT_OF_RANGE);
         }
 
-        return evaluationRepository.save(evaluationDTO.toEntity());
+        Evaluation evaluation = evaluationRepository.findByEgoIdAndUid(evaluationDTO.getEgoId(), evaluationDTO.getUid())
+                .orElseGet(evaluationDTO::toEntity);
+
+        evaluation.setSolvingScore(solvingScore);
+        evaluation.setTalkingScore(talkingScore);
+        evaluation.setOverallScore(overallScore);
+
+        return evaluationRepository.save(evaluation);
     }
 
     public List<Evaluation> readAll(){

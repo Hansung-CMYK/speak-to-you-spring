@@ -25,4 +25,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     @Query("SELECT egoId FROM ChatRoom WHERE uid = :uid")
     List<Long> findEgoIdByUidList(@Param("uid") String uid);
+
+    Optional<ChatRoom> findById(Long id);
 }

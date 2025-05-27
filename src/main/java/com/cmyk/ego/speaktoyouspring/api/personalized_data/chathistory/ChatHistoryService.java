@@ -78,7 +78,9 @@ public class ChatHistoryService {
     /**
      * 전체 채팅 내역을 page단위로 조회
      */
-    public Page<ChatHistory> getPagedChatHistories(int pageNum, int pageSize) {
+    public Page<ChatHistory> getPagedChatHistories(Long chatRoomId, int pageNum, int pageSize) {
+
+        chatRoomService.findByChatRoomId(chatRoomId);
 
         // Pageable 객체를 생성 (from, to는 페이지 번호 기준으로 0부터 시작)
         // from: 페이지 번호, to: 페이지 크기
@@ -86,13 +88,15 @@ public class ChatHistoryService {
         // pageSize로 나뉘어진 page에서 몇번째 page를 조회할까요 : pageNum
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Order.desc("chatAt")));
 
-        return chatHistoryRepository.findByIsDeletedFalse(pageable);
+        return chatHistoryRepository.findByChatRoomIdAndIsDeletedFalse(chatRoomId, pageable);
     }
 
     /**
      * 하루치 채팅 내역 조회
      */
     public List<ChatHistory> getDailyChatHistories(Long chatRoomId, String dateString) {
+        chatRoomService.findByChatRoomId(chatRoomId);
+
         List<LocalDateTime> dayList = convertStringToDayList(dateString);
 
         List<ChatHistory> chatHistories = chatHistoryRepository.findByChatRoomIdAndIsDeletedFalseAndChatAtBetween(chatRoomId, dayList.getFirst(), dayList.getLast());

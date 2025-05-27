@@ -70,8 +70,10 @@ public class EgoApplicationService {
         // 에고 기본 정보 조회
         Ego ego = egoService.findById(egoId);
 
-        // 에고 성격 리스트 조회
+        // 에고가 가지고 있는 성격의 리스트를 조회한다.(id 값으로 리턴되어 어떤 성격인지 모름)
         List<EgoPersonality> personalityList = egoPersonalityService.findByEgoId(egoId);
+
+        // 조회한 있는 성격 id 값으로 어떤 성격인지 가져온다.
         List<String> personalityNameList = new ArrayList<>();
         for (EgoPersonality personality : personalityList) {
             personalityNameList.add(personalityService.findByPersonalityId(personality.getPersonalityId()).getContent());
@@ -110,6 +112,7 @@ public class EgoApplicationService {
     /// 오늘의 에고 조회
     public Ego getTodayEgo(String uid) {
         // 오늘의 에고 조회
+        // TODO : 현재 랜덤으로 불러와서 추천 알고리즘을 개선 수정해야 한다.
         Long egoId = chatRoomService.findRandomEgoIdByUid(uid);
 
         return egoService.findById(egoId);

@@ -1,10 +1,12 @@
 package com.cmyk.ego.speaktoyouspring.api.personalized_data.chatroom;
 
+import com.cmyk.ego.speaktoyouspring.api.hub.ego.EgoService;
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
 import com.cmyk.ego.speaktoyouspring.config.CommonResponse;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.UserAccountErrorCode;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +20,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
+    private final EgoService egoService;
     private final UserAccountRepository userAccountRepository;
 
     /**
      * 채팅방 생성
      * 필수값 : uid, egoid
      */
+    @Operation(summary = "사용자 id와 에고 id로 채팅방을 생성/수정하는 API", description = "uid와 egoid를 입력받아 해당 채팅방을 생성합니다.<br>단, 기존에 uid-egoId로 생성된 채팅방이 있는 경우, lastChatAt이 업데이트 됩니다.<br>lastChatAt을 전달하지 않으면, 현재 시각으로 전달됩니다. <br> lastChatAt(필수 아님)", tags = {"채팅방"})
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid ChatRoomDTO chatRoomDTO, BindingResult bindingResult) {
 
@@ -52,6 +56,7 @@ public class ChatRoomController {
      * 채팅방 삭제
      * 필수값 : uid, egoid
      */
+    @Operation(summary = "사용자 id와 에고 id로 채팅방을 삭제하는 API", description = "사용자 ID와 에고 ID로 채팅방을 삭제한다. <i>실제 삭제가 아닌 is_deleted 값 변경.</i>", tags = {"채팅방"})
     @DeleteMapping
     public ResponseEntity delete(@RequestBody ChatRoomDTO targetChatRoom) {
         if (targetChatRoom.getUid() == null || targetChatRoom.getEgoId() == null) {
@@ -76,6 +81,7 @@ public class ChatRoomController {
      * page수와 pagesize에 따른 채팅방 리스트 조회
      * 필수값 : uid
      */
+    @Operation(summary = "사용자id로 채팅방 리스트를 조회하는 API", description = "사용자 id로 채팅방을 조회한다. <br>리스트 순서는 lastChatAt을 기준으로 최신순으로 정렬된다.", tags = {"채팅방"})
     @PostMapping("/list")
     public ResponseEntity getUndeletedChatRooms(
             @RequestBody @Valid ChatRoomPageRequest chatRoomPageRequest,

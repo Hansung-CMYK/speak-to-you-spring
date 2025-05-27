@@ -1,7 +1,6 @@
 package com.cmyk.ego.speaktoyouspring.api.personalized_data.ego_relationship;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,7 @@ public class EgoRelationshipDTO {
     @Schema(example = "2")
     private Long relationshipId;
 
-    @Schema(example = "2025-05-19T23:30:25.998")
+    @Schema(example = "2025-05-19T23:30:25.998", hidden = true)
     private LocalDateTime createdAt;
 
     public EgoRelationship toEntity() {

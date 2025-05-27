@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
     Optional<Evaluation> findByEgoId(Long egoId);
+
+    Optional<Evaluation> findByEgoIdAndUid(Long egoId, String uid);
 }
