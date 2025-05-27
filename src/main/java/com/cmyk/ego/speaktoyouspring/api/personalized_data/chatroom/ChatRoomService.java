@@ -82,6 +82,18 @@ public class ChatRoomService {
                 .orElseThrow(() -> new ControlledException(ChatRoomErrorCode.ERROR_CHATROOM_NOT_FOUND));
     }
 
+    public Long getChatRoomId(String uid, Integer egoId) {
+        // 전달받은 Uid가 있는지 확인
+        userAccountRepository.findByUid(uid).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
+        TenantContext.setCurrentTenant(uid);
+
+        return chatRoomRepository.findByUidAndEgoIdAndIsDeletedFalse(uid, egoId).orElseThrow(
+                () -> new ControlledException(ChatRoomErrorCode.ERROR_CHATROOM_NOT_FOUND)
+        ).getId();
+    }
+
     public Long findRandomEgoIdByUid(String uid) {
         List<Long> egoIdList = egoService.readAll().stream().map(Ego::getId).toList();
 
