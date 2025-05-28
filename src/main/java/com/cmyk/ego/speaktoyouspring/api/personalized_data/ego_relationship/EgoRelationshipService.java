@@ -69,8 +69,8 @@ public class EgoRelationshipService {
     }
 
     public String findEgoRelationshipIdByEgoIdAndUid(String uid, Long egoId){
-        EgoRelationship egoRelationship = egoRelationshipRepository.findByUidAndEgoId(uid, egoId).orElseThrow(
-                () -> new ControlledException(EgoRelationshipErrorCode .ERROR_EGO_RELATIONSHIP_NOT_FOUND));
+        EgoRelationship egoRelationship = egoRelationshipRepository.findByUidAndEgoId(uid, egoId).orElseGet(
+                () -> new EgoRelationship(null, uid, egoId, null, null));
 
         return relationshipService.findByRelationshipId(egoRelationship.getRelationshipId()).getRelationshipContent();
     }
