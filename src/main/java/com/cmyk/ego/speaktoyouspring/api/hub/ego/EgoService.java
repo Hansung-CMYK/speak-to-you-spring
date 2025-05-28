@@ -118,6 +118,6 @@ public class EgoService {
     }
 
     public EgoDTO convertEgoDTO(Ego ego) {
-        return new EgoDTO(ego.getId(), ego.getName(), ego.getIntroduction(), ego.getProfileImage(), ego.getMbti(), ego.getCreatedAt(), ego.getLikes(), 0,new ArrayList<>());
+        return new EgoDTO(ego.getId(), ego.getName(), ego.getIntroduction(), ego.getProfileImage(), ego.getMbti(), ego.getCreatedAt(), ego.getLikes(), 0,new ArrayList<>(), null);
     }
 }

@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS ego (
     profile_image BYTEA,                                          -- EGO 프로필 이미지, PostgreSQL에서는 BYTEA 사용
     mbti VARCHAR(4),                                              -- MBTI 성격 유형
     created_at DATE NOT NULL DEFAULT CURRENT_DATE,                -- 생성 날짜
-    likes INTEGER                                                 -- 에고별 좋아요 개수
+    likes INTEGER,                                                -- 에고별 좋아요 개수
+    voice_url TEXT -- 음성 데이터 URL
 );
 
 -- 에고와 에고 성격(여러 개)를 매핑 시켜놓은 테이블
