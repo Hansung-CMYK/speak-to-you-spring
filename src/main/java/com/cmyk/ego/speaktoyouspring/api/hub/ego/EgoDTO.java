@@ -37,7 +37,7 @@ public class EgoDTO {
     private LocalDate createdAt;             // 생성 날짜
 
     @Schema(example = "1000")
-    private Long likes;
+    private Long likes = 0L;
 
     @Schema(example = "5", hidden = true)
     private Integer rating;
