@@ -43,6 +43,9 @@ public class RatingEgoDTO {
 
     private Integer rating;
 
+    @Schema(example = "/path")
+    private String voiceUrl = "";
+
     public Ego toEntity() {
         return Ego.builder()
                 .id(id)
@@ -52,6 +55,7 @@ public class RatingEgoDTO {
                 .mbti(mbti)
                 .createdAt(createdAt)
                 .likes(likes)
+                .voiceUrl(voiceUrl)
                 .build();
     }
 }

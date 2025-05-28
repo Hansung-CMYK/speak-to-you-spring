@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 @Validated
 public class AdminController {
-
+    private final AdminService adminService;
     private final AdminDbProperties db;
 
     private static final String LOG_FILE_NAME = "db-backup-log.txt";
@@ -45,6 +45,19 @@ public class AdminController {
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("FCM 발송 완료").data(response).build());
     }
 
+    /**
+     *
+     * 채팅방과 채팅 내역 전체를 추가하는 API
+     */
+    @Operation(summary = "[관리자]: 채팅방과 채팅 내역 전체를 추가하는 API", description = "", tags = {"관리자"})
+    @PostMapping("/chat/list")
+    public ResponseEntity createChatList(@RequestBody AdminChatListDTO adminChatListDTO) {
+        adminService.createChatList(adminChatListDTO);
+        var result = "";
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("채팅 내역 저장 완료").data(result).build());
+    }
+
+    // ✅ 리눅스용
     @Operation(summary = "[관리자]: 리눅스용 DB 백업하는 API", description = "2개의 DB 백업을 수행한다. <br>기존의 백업 데이터에 덮어씌운다. (리눅스를 실행하려면, postgresql를 설치해야 한다.)", tags = {"관리자"})
     @PostMapping("/backup")
     public ResponseEntity backupLinux() {

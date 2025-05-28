@@ -44,4 +44,8 @@ public class Ego {
     /// EGO 좋아요 개수
     @Column(name = "likes")
     private Long likes;
+
+    /// 음성 파일 URL 경로
+    @Column(name ="voice_url")
+    private String voiceUrl;
 }
