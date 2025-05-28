@@ -12,15 +12,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class EgoLikeService {
     private final EgoLikeRepository egoLikeRepository;
     private final EgoService egoService;
+
     /**
      * ego 좋아요 상태 등록
-     * */
+     */
     public Ego updateLikes(EgoLikeDTO egoLikeDTO) {
+        EgoLike eL = egoLikeDTO.toEntity();
         EgoLike egoLike = egoLikeRepository.findByEgoIdAndUid(egoLikeDTO.getEgoId(), egoLikeDTO.getUid())
-                .orElse(egoLikeDTO.toEntity());
-
+                .orElseGet(() -> {
+                    eL.setIsLike(null);
+                    return eL;
+                });
+        int delta = 0;
+        if (eL.getIsLike() == null) delta = 1;
+        else delta = calculateLikeDelta(egoLike.getIsLike(), egoLikeDTO.getIsLike());
         // Ego에 좋아요 개수 업데이트
-        Ego ego = egoService.updateLike(egoLikeDTO, calculateLikeDelta(egoLike.getIsLike(), egoLikeDTO.getIsLike()));
+        Ego ego = egoService.updateLike(egoLikeDTO, delta);
 
         egoLike.setIsLike(egoLikeDTO.getIsLike()); // Like 상태 업데이트
         egoLikeRepository.save(egoLike); // egoLike 업데이트 후 저장
