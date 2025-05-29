@@ -137,4 +137,24 @@ public class EgoController {
         var result = egoApplicationService.getEgoInfoByUidAndEgoId(userId, egoId);
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("사용자와 관련된 에고 정보 조회 완료").data(result).build());
     }
+
+    /**
+     * 에고 음성 경로 저장하는 API
+     */
+    @Operation(summary = "에고 음성 경로 저장하는 API", description = "사용자와 관련된 에고 정보를 조회한다. <br>egoId는 필수이다.", tags = {"에고 정보"})
+    @PostMapping("/voice/{egoId}")
+    public ResponseEntity saveVoicePath(@PathVariable("egoId") Long egoId, @RequestBody String voiceUrl) {
+        var result = egoApplicationService.saveVoicePath(egoId, voiceUrl);
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("에고 음성 경로 저장 완료").data(result).build());
+    }
+
+    /**
+     * 에고 음성 경로 조회하는 API
+     */
+    @Operation(summary = "에고 음성 경로 조회하는 API", description = "사용자와 관련된 에고 정보를 조회한다. <br>egoId는 필수이다.", tags = {"에고 정보"})
+    @GetMapping("/voice/{userId}")
+    public ResponseEntity getVoicePath(@PathVariable("userId") String userId) {
+        var result = egoApplicationService.getVoicePath(userId);
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("에고 음성 경로 조회 완료").data(result).build());
+    }
 }

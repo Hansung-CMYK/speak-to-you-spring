@@ -120,4 +120,14 @@ public class EgoService {
     public EgoDTO convertEgoDTO(Ego ego) {
         return new EgoDTO(ego.getId(), ego.getName(), ego.getIntroduction(), ego.getProfileImage(), ego.getMbti(), ego.getCreatedAt(), ego.getLikes(), 0,new ArrayList<>(), null);
     }
+
+    public Ego save(Ego ego) {
+        return egoRepository.save(ego);
+    }
+
+    public Ego findByUid(String uid) {
+        return egoRepository.findByUid(uid).orElseThrow(
+                () -> new ControlledException(EgoErrorCode.ERROR_EGO_NOT_FOUND)
+        );
+    }
 }

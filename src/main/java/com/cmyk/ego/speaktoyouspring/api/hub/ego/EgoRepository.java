@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface EgoRepository extends JpaRepository<Ego, Long> {
     Optional<Ego> findById(Long egoId);
+
+    Optional<Ego> findByUid(String uid);
 }

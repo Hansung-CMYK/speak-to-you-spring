@@ -148,4 +148,18 @@ public class EgoApplicationService {
         uidMap.put("uid", uid);
         return uidMap;
     }
+
+    public Ego saveVoicePath(Long egoId, String voicePath) {
+        Ego ego = egoService.findById(egoId);
+        ego.setVoiceUrl(voicePath);
+        return egoService.save(ego);
+    }
+
+    public Ego getVoicePath(String uid) {
+        // 전달받은 Uid가 있는지 확인
+        UserAccount ua = userAccountRepository.findByUid(uid).orElseThrow(
+                () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
+
+        return egoService.findByUid(uid);
+    }
 }
