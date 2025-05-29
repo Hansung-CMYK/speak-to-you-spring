@@ -159,7 +159,7 @@ public class EgoController {
     }
 
     @Operation(summary = "에고 페르소나를 저장하는 API", description = "에고의 세부적인 데이터를 저장한다. <br>모든 정보는 필수이다.", tags = {"에고 정보"})
-    @GetMapping("/persona}")
+    @PostMapping("/persona")
     public ResponseEntity savePersona(@RequestBody PersonaDTO personaDTO) {
         var result = egoApplicationService.savePersona(personaDTO);
 

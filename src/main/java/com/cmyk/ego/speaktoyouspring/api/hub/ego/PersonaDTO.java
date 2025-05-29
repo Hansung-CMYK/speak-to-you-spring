@@ -1,10 +1,17 @@
 package com.cmyk.ego.speaktoyouspring.api.hub.ego;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.util.List;
 
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PersonaDTO {
     @Schema(example = "5")
     @NotBlank(message = "ego_id은 필수입니다.")
@@ -22,8 +29,10 @@ public class PersonaDTO {
     @NotBlank(message = "mbti는 필수입니다.")
     String mbti;
 
-    @Schema(example = """
-                [ 
+    @ArraySchema(
+            schema = @Schema(description = "인터뷰 내역"),
+            arraySchema = @Schema(example = """
+                [
                     [
                         '1) 가장 좋아하는 음식은 무엇인가요?',
                         '2) 평소 즐겨 하는 취미나 여가 활동은 무엇인가요?',
@@ -48,6 +57,7 @@ public class PersonaDTO {
                         '가을을 좋아해요. 선선한 날씨와 단풍이 아름다워서요.',
                     ]
                 ]
-            """)
+                """)
+    )
     List<List<String>> interview;
 }
