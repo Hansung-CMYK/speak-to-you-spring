@@ -204,7 +204,7 @@ public class ChatHistoryService {
 
         // 6. 각 채팅방별로 사용자 채팅 내역을 리스트에 추가
         for (List<ChatHistory> chatList : groupedByRoom.values()) {
-            int egoId = chatRoomService.getChatRoom(userid).getEgoId();
+            int egoId = chatRoomService.findByChatRoomId(chatList.getFirst().getChatRoomId()).getEgoId();
             List<Map<String, Object>> chatGroup = new ArrayList<>();
 
             for (ChatHistory chat : chatList) {

@@ -29,7 +29,7 @@ public class FlywayConfig {
         // hub Database에 관한 정보를 명시한다.
         Flyway.configure()
                 .dataSource(hubProperties.getDatasource())
-                .locations(flywayProperties.getLocations().getFirst()) // application.yml에서 경로 로드
+                .locations("classpath:db/migration/hub") // application.yml에서 경로 로드
                 .baselineOnMigrate(flywayProperties.isBaselineOnMigrate()) // 기존 DB를 기준점으로 설정할지 여부
                 .load();
                 //.migrate();
@@ -42,7 +42,7 @@ public class FlywayConfig {
         schemas.forEach(schema -> {
             Flyway.configure()
                     .dataSource(personalizedDataProperties.getDataSource())
-                    .locations(flywayProperties.getLocations().get(1))
+                    .locations("classpath:db/migration/personalized-data")
                     .baselineOnMigrate(flywayProperties.isBaselineOnMigrate()) // 기존 DB를 기준점으로 설정할지 여부
                     .defaultSchema(schema) // 개별 테넌트 스키마 이름 적용 (uid로 적용됨)
                     .load();
