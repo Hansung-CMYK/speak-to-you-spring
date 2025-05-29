@@ -21,10 +21,6 @@ public class PersonaDTO {
     @NotBlank(message = "name은 필수입니다.")
     String name;
 
-    @Schema(example = "26")
-    @NotBlank(message = "age는 필수입니다.")
-    int age;
-
     @Schema(example = "INTJ")
     @NotBlank(message = "mbti는 필수입니다.")
     String mbti;
