@@ -124,10 +124,4 @@ public class EgoService {
     public Ego save(Ego ego) {
         return egoRepository.save(ego);
     }
-
-    public Ego findByUid(String uid) {
-        return egoRepository.findByUid(uid).orElseThrow(
-                () -> new ControlledException(EgoErrorCode.ERROR_EGO_NOT_FOUND)
-        );
-    }
 }

@@ -160,6 +160,8 @@ public class EgoApplicationService {
         UserAccount ua = userAccountRepository.findByUid(uid).orElseThrow(
                 () -> new ControlledException(UserAccountErrorCode.ERROR_USER_NOT_FOUND));
 
-        return egoService.findByUid(uid);
+        TenantContext.setCurrentTenant(uid);
+
+        return egoService.findById(ua.getEgoId());
     }
 }
