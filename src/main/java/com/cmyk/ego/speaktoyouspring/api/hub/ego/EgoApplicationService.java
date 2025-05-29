@@ -41,6 +41,8 @@ public class EgoApplicationService {
     private final PersonalityService personalityService;
     private final UserAccountRepository userAccountRepository;
 
+    private final HttpClient client = HttpClient.newHttpClient();
+
     public List<EgoDTO> getUserEgoList(String userId) {
         List<Ego> egoList = egoService.readAll();
 
@@ -192,7 +194,7 @@ public class EgoApplicationService {
         persona.put("interview", interviewLog.toString());
 
         // TODO 3. 페르소나 질의응답 저장하기
-        // 👇 HTTP POST 요청
+        // HTTP POST 요청
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonBody = objectMapper.writeValueAsString(persona);
@@ -203,7 +205,6 @@ public class EgoApplicationService {
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                     .build();
 
-            HttpClient client = HttpClient.newHttpClient();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             // 반환 에러 발생 시 로그 작성
