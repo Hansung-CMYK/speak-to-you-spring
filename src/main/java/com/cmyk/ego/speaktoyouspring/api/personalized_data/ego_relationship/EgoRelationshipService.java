@@ -1,5 +1,6 @@
 package com.cmyk.ego.speaktoyouspring.api.personalized_data.ego_relationship;
 
+import com.cmyk.ego.speaktoyouspring.api.hub.ego.EgoService;
 import com.cmyk.ego.speaktoyouspring.api.hub.relationship.RelationshipService;
 import com.cmyk.ego.speaktoyouspring.api.hub.user_account.UserAccountRepository;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EgoRelationshipService {
     private final RelationshipService relationshipService;
+    private final EgoService egoService;
     private final EgoRelationshipRepository egoRelationshipRepository;
     private final UserAccountRepository userAccountRepository;
 
@@ -41,7 +43,9 @@ public class EgoRelationshipService {
                     egoRelationship.getEgoId(),
                     egoRelationship.getRelationshipId(),
                     egoRelationship.getCreatedAt(),
-                    relationshipService.findByRelationshipId(egoRelationship.getRelationshipId()).getRelationshipContent()
+                    relationshipService.findByRelationshipId(egoRelationship.getRelationshipId()).getRelationshipContent(),
+                    egoService.findById(egoRelationship.getEgoId()).getName(),
+                    egoService.findById(egoRelationship.getEgoId()).getProfileImage()
             );
             erList.add(er);
         }

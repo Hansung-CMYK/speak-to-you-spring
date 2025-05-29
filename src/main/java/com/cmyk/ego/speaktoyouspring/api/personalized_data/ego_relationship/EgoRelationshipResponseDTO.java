@@ -28,4 +28,10 @@ public class EgoRelationshipResponseDTO {
     @Schema(example = "매력적")
     private String relationshipContent;
 
+    @Schema(example = "카리나")
+    private String egoName;
+
+    @Schema(example = "qcwoeirqweqwcjieqwoicje")
+    private byte[] egoProfileImage;
+
 }
