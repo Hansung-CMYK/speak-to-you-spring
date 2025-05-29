@@ -41,7 +41,10 @@ public class EgoApplicationService {
     private final PersonalityService personalityService;
     private final UserAccountRepository userAccountRepository;
 
-    private final HttpClient client = HttpClient.newHttpClient();
+    private static final HttpClient client =
+            HttpClient.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .build();
 
     public List<EgoDTO> getUserEgoList(String userId) {
         List<Ego> egoList = egoService.readAll();
@@ -200,18 +203,25 @@ public class EgoApplicationService {
             String jsonBody = objectMapper.writeValueAsString(persona);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8003/api/persona")) // https가 아니라 http로 수정 (로컬 서버일 경우)
+                    .uri(URI.create("http://127.0.0.1:8003/api/persona"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                     .build();
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response =
+                    client.send(request, HttpResponse.BodyHandlers.ofString());
 
             // 반환 에러 발생 시 로그 작성
-            if (response.statusCode() != 200 && response.statusCode() != 201)
+            if (response.statusCode() != 200 && response.statusCode() != 201) {
+                System.out.println("STATUS  = " + response.statusCode());
+                System.out.println("RESPONSE= " + response.body());
                 throw new ControlledException(BasicErrorCode.FAST_API_ERROR);
+            }
 
             return persona;
-        } catch (Exception e) { throw new ControlledException(BasicErrorCode.FAST_API_ERROR); }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ControlledException(BasicErrorCode.FAST_API_ERROR);
+        }
     }
 }
