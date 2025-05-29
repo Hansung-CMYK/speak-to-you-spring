@@ -15,14 +15,18 @@ import com.cmyk.ego.speaktoyouspring.api.personalized_data.evaluation.Evaluation
 import com.cmyk.ego.speaktoyouspring.api.personalized_data.evaluation.EvaluationService;
 import com.cmyk.ego.speaktoyouspring.config.multitenancy.TenantContext;
 import com.cmyk.ego.speaktoyouspring.exception.ControlledException;
+import com.cmyk.ego.speaktoyouspring.exception.ErrorMessage;
+import com.cmyk.ego.speaktoyouspring.exception.errorcode.BasicErrorCode;
 import com.cmyk.ego.speaktoyouspring.exception.errorcode.UserAccountErrorCode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +40,8 @@ public class EgoApplicationService {
     private final EgoPersonalityService egoPersonalityService;
     private final PersonalityService personalityService;
     private final UserAccountRepository userAccountRepository;
+
+    private final HttpClient client = HttpClient.newHttpClient();
 
     public List<EgoDTO> getUserEgoList(String userId) {
         List<Ego> egoList = egoService.readAll();
@@ -163,5 +169,49 @@ public class EgoApplicationService {
         TenantContext.setCurrentTenant(uid);
 
         return egoService.findById(ua.getEgoId());
+    }
+
+    public HashMap<String, String> savePersona(PersonaDTO personaDTO) {
+        // TODO 1. 페르소나 개인정보 저장하기
+        HashMap<String, String> persona = new HashMap<>();
+        persona.put("ego_id", personaDTO.egoId.toString());
+        persona.put("name", personaDTO.name);
+        persona.put("mbti", personaDTO.mbti);
+
+        // TODO 2. 질의응답 정제하기
+        List<List<String>> interview = personaDTO.interview;
+
+        StringBuilder interviewLog = new StringBuilder();
+        if (interview.size() >= 2) {
+            List<String> firstList = interview.get(0);
+            List<String> secondList = interview.get(1);
+
+            for (int i = 0; i < Math.min(firstList.size(), secondList.size()); i++) {
+                interviewLog.append(firstList.get(i)).append("\n").append(secondList.get(i)).append("\n");
+            }
+        }
+
+        persona.put("interview", interviewLog.toString());
+
+        // TODO 3. 페르소나 질의응답 저장하기
+        // HTTP POST 요청
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonBody = objectMapper.writeValueAsString(persona);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8003/api/persona")) // https가 아니라 http로 수정 (로컬 서버일 경우)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // 반환 에러 발생 시 로그 작성
+            if (response.statusCode() != 200 && response.statusCode() != 201)
+                throw new ControlledException(BasicErrorCode.FAST_API_ERROR);
+
+            return persona;
+        } catch (Exception e) { throw new ControlledException(BasicErrorCode.FAST_API_ERROR); }
     }
 }
