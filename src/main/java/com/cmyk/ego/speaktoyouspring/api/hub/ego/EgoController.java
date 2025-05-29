@@ -157,4 +157,12 @@ public class EgoController {
         var result = egoApplicationService.getVoicePath(userId);
         return ResponseEntity.ok(CommonResponse.builder().code(200).message("에고 음성 경로 조회 완료").data(result).build());
     }
+
+    @Operation(summary = "에고 페르소나를 저장하는 API", description = "에고의 세부적인 데이터를 저장한다. <br>모든 정보는 필수이다.", tags = {"에고 정보"})
+    @GetMapping("/persona}")
+    public ResponseEntity savePersona(@RequestBody PersonaDTO personaDTO) {
+        var result = egoApplicationService.savePersona(personaDTO);
+
+        return ResponseEntity.ok(CommonResponse.builder().code(200).message("페르소나 정보 저장 완료").data(result).build());
+    }
 }
